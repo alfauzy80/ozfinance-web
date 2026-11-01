@@ -35,6 +35,7 @@
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 204, 0, 0.4); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="p-4 md:p-8 font-sans antialiased relative">
@@ -66,6 +67,7 @@
                     <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(255,204,0,0.3)] hover:scale-105 transition-transform flex items-center justify-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Masuk
                     </button>
+                    <!-- Biometrik Muncul untuk Nasabah & Admin -->
                     <button type="button" id="btn-biometric-login" onclick="window.loginWithBiometrics()" class="w-full bg-gray-800 border border-gray-700 text-white font-bold py-3 rounded-xl hover:border-yellow-400 hover:text-yellow-400 transition-colors items-center justify-center gap-2" style="display: flex;">
                         <i class="fa-solid fa-fingerprint text-lg"></i> Sidik Jari / FaceID
                     </button>
@@ -82,17 +84,23 @@
                     <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(253,224,38,0.5)]">
                     <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-200">OZfinance</h1>
                 </div>
-                <p class="text-gray-400 text-sm">Dashboard <span id="total-nasabah" class="ml-2 font-bold text-gray-900 px-2 py-0.5 bg-yellow-400 rounded">0 Nasabah</span></p>
+                <!-- Teks Dashboard dihapus sesuai permintaan -->
             </div>
             
             <div id="header-actions" class="flex items-center gap-3 flex-wrap justify-center">
-                <!-- Tombol Install PWA Otomatis -->
-                <button type="button" id="btn-install-pwa" onclick="window.triggerInstallPrompt()" class="bg-yellow-500/20 border border-yellow-500/50 hover:bg-yellow-500 hover:text-black text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-download"></i> Install Aplikasi</button>
+                <!-- Kolom Pencarian Admin -->
+                <div class="relative">
+                    <input type="text" id="search-input" onkeyup="window.searchNasabah()" placeholder="Cari Nama / WA..." class="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 pl-10 text-white text-sm focus:outline-none focus:border-yellow-400 w-full sm:w-64 transition-all" style="display: none;">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" id="search-icon" style="display: none;"></i>
+                </div>
+
+                <!-- Tombol Install PWA -->
+                <button type="button" id="btn-install-pwa" onclick="window.triggerInstallPrompt()" class="bg-yellow-500/20 border border-yellow-500/50 hover:bg-yellow-500 hover:text-black text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-download"></i> Install Aplikasi</button>
                 
-                <button type="button" id="btn-profile" onclick="window.openProfileModal()" class="bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-user-circle text-lg"></i> Profil Saya</button>
+                <button type="button" id="btn-profile" onclick="window.openProfileModal()" class="bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-user-circle text-lg"></i> Profil Saya</button>
                 
                 <div id="admin-actions" class="flex items-center gap-3" style="display: flex;">
-                    <button type="button" onclick="window.openPwdModal()" class="w-11 h-11 rounded-xl bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 flex items-center justify-center transition-all shadow-lg" title="Ganti Password"><i class="fa-solid fa-key"></i></button>
+                    <button type="button" onclick="window.openPwdModal()" class="w-11 h-11 rounded-xl bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 flex items-center justify-center transition-all shadow-lg" title="Ganti Password & Fingerprint"><i class="fa-solid fa-key"></i></button>
                     <button type="button" onclick="window.openAddModal()" class="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11"><i class="fa-solid fa-user-plus"></i> Nasabah Baru</button>
                 </div>
             </div>
@@ -137,7 +145,7 @@
                     <p class="text-[9px] text-red-400/80 mt-1">*Hanya admin yang dapat mengubah nomor WA.</p>
                 </div>
 
-                <button type="button" onclick="window.registerBiometrics()" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2">
+                <button type="button" onclick="window.registerBiometrics('nasabah')" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2">
                     <i class="fa-solid fa-fingerprint"></i> Daftarkan Perangkat Ini (Biometrik)
                 </button>
 
@@ -189,10 +197,34 @@
     <!-- Modal Share Link -->
     <div id="share-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4"><div class="glass-panel w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900" id="share-modal-content"><div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3"><h3 class="text-lg font-bold text-white"><i class="fa-solid fa-share-nodes text-yellow-400 mr-2"></i> Tautan Nasabah</h3><button type="button" onclick="window.closeShareModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button></div><div class="flex items-center gap-2 mb-4"><input type="text" id="share-link-input" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-gray-300 text-xs focus:outline-none" readonly><button type="button" id="copy-btn" onclick="window.copyShareLink()" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-copy"></i> Salin</button></div></div></div>
     
-    <div id="pwd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4"><div class="glass-panel w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="pwd-modal-content"><div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3"><h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-yellow-400 mr-2"></i> Ganti Password</h3><button type="button" onclick="window.closePwdModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button></div><form onsubmit="event.preventDefault(); window.submitPwdAction(); return false;" class="space-y-4"><div><label class="block text-xs text-gray-400 mb-1">Password Lama</label><input type="password" id="pwd-old" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div><div><label class="block text-xs text-gray-400 mb-1">Password Baru</label><input type="password" id="pwd-new" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div><div id="pwd-error" class="text-red-400 text-xs font-medium bg-red-500/10 py-2 rounded-lg text-center" style="display: none;"></div><div id="pwd-success" class="text-green-400 text-xs font-bold bg-green-500/10 py-2 rounded-lg text-center" style="display: none;">Tersimpan!</div><div class="pt-4 flex gap-3"><button type="button" onclick="window.closePwdModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button><button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold">Simpan</button></div></form></div></div>
+    <!-- Modal Password Admin + Fingerprint -->
+    <div id="pwd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="pwd-modal-content">
+            <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
+                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-yellow-400 mr-2"></i> Keamanan Admin</h3>
+                <button type="button" onclick="window.closePwdModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            
+            <form onsubmit="event.preventDefault(); window.submitPwdAction(); return false;" class="space-y-4">
+                <div><label class="block text-xs text-gray-400 mb-1">Password Lama</label><input type="password" id="pwd-old" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div>
+                <div><label class="block text-xs text-gray-400 mb-1">Password Baru</label><input type="password" id="pwd-new" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div>
+                <div id="pwd-error" class="text-red-400 text-xs font-medium bg-red-500/10 py-2 rounded-lg text-center" style="display: none;"></div>
+                <div id="pwd-success" class="text-green-400 text-xs font-bold bg-green-500/10 py-2 rounded-lg text-center" style="display: none;">Tersimpan!</div>
+                
+                <button type="button" onclick="window.registerBiometrics('admin')" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2 mt-2">
+                    <i class="fa-solid fa-fingerprint"></i> Daftarkan Sidik Jari Admin
+                </button>
+
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="window.closePwdModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
-        // INISIALISASI PWA OTOMATIS (MANIFEST & SERVICE WORKER DALAM 1 FILE)
+        // INISIALISASI PWA OTOMATIS
         document.addEventListener("DOMContentLoaded", function() {
             const manifestData = {
                 "name": "OZfinance Super Dashboard",
@@ -202,29 +234,22 @@
                 "background_color": "#000000",
                 "theme_color": "#fde047",
                 "icons": [
-                    {
-                        "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0",
-                        "sizes": "192x192",
-                        "type": "image/png"
-                    },
-                    {
-                        "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0",
-                        "sizes": "512x512",
-                        "type": "image/png"
-                    }
+                    { "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0", "sizes": "192x192", "type": "image/png" },
+                    { "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0", "sizes": "512x512", "type": "image/png" }
                 ]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
             document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
 
             if ('serviceWorker' in navigator) {
-                const swCode = `
-                    self.addEventListener('install', e => { self.skipWaiting(); });
-                    self.addEventListener('activate', e => { self.clients.claim(); });
-                    self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
-                `;
+                const swCode = `self.addEventListener('install', e => { self.skipWaiting(); }); self.addEventListener('activate', e => { self.clients.claim(); }); self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });`;
                 const swBlob = new Blob([swCode], { type: 'text/javascript' });
                 navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log('SW registration failed:', err));
+            }
+            
+            // Selalu tampilkan tombol install jika belum dalam mode standalone (aplikasi)
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                document.getElementById('btn-install-pwa').style.display = 'flex';
             }
         });
 
@@ -233,11 +258,13 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('btn-install-pwa').style.display = 'flex';
         });
 
         window.triggerInstallPrompt = async function() {
-            if (!deferredPrompt) return;
+            if (!deferredPrompt) {
+                alert("Untuk Menginstal: Ketuk menu browser Chrome/Safari (titik tiga), lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen).");
+                return;
+            }
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
             if (outcome === 'accepted') {
@@ -271,7 +298,7 @@
             document.getElementById('loading-overlay').style.display = 'none'; 
         };
 
-        // KONFIGURASI FIREBASE MENGGUNAKAN SDK COMPAT (KEBAL ERROR)
+        // KONFIGURASI FIREBASE MENGGUNAKAN SDK COMPAT
         const firebaseConfig = {
             apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4",
             authDomain: "ozfinance-5fb9c.firebaseapp.com",
@@ -291,21 +318,23 @@
             dbRef.on('value', function(snapshot) {
                 const data = snapshot.val();
                 let parsedData = [];
-                if (data) { 
-                    Object.keys(data).forEach(function(key) { parsedData.push(data[key]); }); 
-                }
+                if (data) { Object.keys(data).forEach(function(key) { parsedData.push(data[key]); }); }
                 window.allServerData = parsedData;
                 
-                if(window.isReadOnly && window.currentLoggedWA) {
-                    window.appData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === window.currentLoggedWA; });
-                    window.renderDashboard();
-                } else if (!window.isReadOnly && window.currentLoggedWA === null && document.getElementById('auth-screen').style.display === 'none') {
-                    window.appData = window.allServerData;
-                    window.renderDashboard();
+                // Jika sedang melakukan pencarian, jangan reset appData otomatis
+                const searchQuery = document.getElementById('search-input') ? document.getElementById('search-input').value : '';
+                if(searchQuery.trim() === '') {
+                    if(window.isReadOnly && window.currentLoggedWA) {
+                        window.appData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === window.currentLoggedWA; });
+                    } else if (!window.isReadOnly && window.currentLoggedWA === null && document.getElementById('auth-screen').style.display === 'none') {
+                        window.appData = window.allServerData;
+                    }
                 }
+                
+                if (document.getElementById('auth-screen').style.display === 'none') window.renderDashboard();
                 window.hideLoading();
             }, function(error) {
-                alert("Kesalahan Koneksi Firebase (Pastikan Rules bernilai true). Detail: " + error.message);
+                alert("Kesalahan Koneksi Firebase. Detail: " + error.message);
                 window.hideLoading();
             });
 
@@ -320,10 +349,7 @@
                     window.hideLoading();
                 });
             };
-        } catch (e) {
-            alert("Sistem Firebase Gagal Memuat: " + e.message);
-            window.hideLoading();
-        }
+        } catch (e) { alert("Sistem Firebase Gagal Memuat: " + e.message); window.hideLoading(); }
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -334,13 +360,13 @@
                     const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === normalizedPassed; });
                     if (customerData.length > 0) { window.handleLoginSuccess(customerData, normalizedPassed); }
                 }, 1500); 
-            } else {
-                window.hideLoading();
-            }
+            } else { window.hideLoading(); }
         };
 
         window.switchTab = function(mode) {
             window.loginMode = mode;
+            document.getElementById('btn-biometric-login').style.display = 'flex'; // Selalu tampilkan biometric
+
             if (mode === 'nasabah') {
                 document.getElementById('tab-nasabah').className = 'flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all';
                 document.getElementById('tab-admin').className = 'flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all';
@@ -349,7 +375,6 @@
                 document.getElementById('auth-input').type = 'number';
                 document.getElementById('auth-input').placeholder = 'Contoh: 0812... atau 628...';
                 document.getElementById('auth-input').value = '';
-                document.getElementById('btn-biometric-login').style.display = 'flex';
             } else {
                 document.getElementById('tab-admin').className = 'flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all';
                 document.getElementById('tab-nasabah').className = 'flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all';
@@ -358,8 +383,21 @@
                 document.getElementById('auth-input').type = 'password';
                 document.getElementById('auth-input').placeholder = '••••';
                 document.getElementById('auth-input').value = '';
-                document.getElementById('btn-biometric-login').style.display = 'none';
             }
+        };
+
+        // FUNGSI PENCARIAN ADMIN
+        window.searchNasabah = function() {
+            if (window.isReadOnly) return;
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!query) {
+                window.appData = window.allServerData;
+            } else {
+                window.appData = window.allServerData.filter(function(d) {
+                    return (d.name && d.name.toLowerCase().includes(query)) || (d.wa && String(d.wa).includes(query));
+                });
+            }
+            window.renderDashboard();
         };
 
         window.handleLoginSuccess = function(customerData, wa) {
@@ -367,6 +405,8 @@
             window.appData = customerData;
             window.currentLoggedWA = window.normalizeWA(wa);
             document.getElementById('admin-actions').style.display = 'none'; 
+            document.getElementById('search-input').style.display = 'none'; // Sembunyikan Pencarian dari Nasabah
+            document.getElementById('search-icon').style.display = 'none';
             document.getElementById('btn-profile').style.display = 'flex';
             document.getElementById('nav-left').style.display = 'none'; 
             document.getElementById('nav-right').style.display = 'none';
@@ -385,6 +425,8 @@
                     window.currentLoggedWA = null;
                     window.appData = window.allServerData;
                     document.getElementById('admin-actions').style.display = 'flex';
+                    document.getElementById('search-input').style.display = 'block'; // Tampilkan Pencarian untuk Admin
+                    document.getElementById('search-icon').style.display = 'block';
                     document.getElementById('btn-profile').style.display = 'none';
                     document.getElementById('nav-left').style.display = 'flex'; 
                     document.getElementById('nav-right').style.display = 'flex';
@@ -399,9 +441,8 @@
             } else {
                 const normalizedInput = window.normalizeWA(input);
                 const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === normalizedInput; });
-                if (customerData.length > 0) {
-                    window.handleLoginSuccess(customerData, normalizedInput);
-                } else {
+                if (customerData.length > 0) { window.handleLoginSuccess(customerData, normalizedInput); } 
+                else {
                     errorDiv.textContent = 'Nomor WA salah atau belum terdaftar!';
                     errorDiv.style.display = 'block';
                     setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
@@ -409,31 +450,66 @@
             }
         };
 
+        // BIOMETRIK ADMIN & NASABAH
         function bufferToBase64url(buffer) { const bytes = new Uint8Array(buffer); let str = ''; for (let char of bytes) str += String.fromCharCode(char); return window.btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ""); }
         function base64urlToBuffer(base64url) { const padding = '='.repeat((4 - base64url.length % 4) % 4); const base64 = (base64url + padding).replace(/\-/g, "+").replace(/_/g, "/"); const str = window.atob(base64); const buffer = new ArrayBuffer(str.length); const bytes = new Uint8Array(buffer); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i); return buffer; }
         
-        window.registerBiometrics = async function() {
+        window.registerBiometrics = async function(role) {
             if (!window.PublicKeyCredential) { alert("Perangkat Anda tidak mendukung fitur WebAuthn/Sidik Jari."); return; }
             try {
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const userID = new Uint8Array(16); window.crypto.getRandomValues(userID);
-                const publicKey = { challenge: challenge, rp: { name: "OZfinance System" }, user: { id: userID, name: window.currentLoggedWA, displayName: "Nasabah" }, pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }], authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" }, timeout: 60000 };
+                
+                const uName = role === 'admin' ? "Admin OZfinance" : window.currentLoggedWA;
+                const dName = role === 'admin' ? "Administrator" : "Nasabah";
+
+                const publicKey = { challenge: challenge, rp: { name: "OZfinance System" }, user: { id: userID, name: uName, displayName: dName }, pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }], authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" }, timeout: 60000 };
                 const credential = await navigator.credentials.create({ publicKey });
-                localStorage.setItem('oz_biometric_id', bufferToBase64url(credential.rawId)); localStorage.setItem('oz_biometric_wa', window.currentLoggedWA);
-                alert("Sidik Jari / FaceID Berhasil Didaftarkan!");
+                
+                if (role === 'admin') {
+                    localStorage.setItem('oz_biometric_admin_id', bufferToBase64url(credential.rawId));
+                    alert("Sidik Jari Admin Berhasil Didaftarkan!");
+                } else {
+                    localStorage.setItem('oz_biometric_id', bufferToBase64url(credential.rawId)); 
+                    localStorage.setItem('oz_biometric_wa', window.currentLoggedWA);
+                    alert("Sidik Jari Nasabah Berhasil Didaftarkan!");
+                }
             } catch (err) { alert("Pendaftaran Biometrik dibatalkan."); }
         };
 
         window.loginWithBiometrics = async function() {
-            const savedId = localStorage.getItem('oz_biometric_id'); const savedWa = localStorage.getItem('oz_biometric_wa');
-            if(!savedId || !savedWa) { alert("Perangkat ini belum terdaftar. Login manual dengan Nomor WA, lalu aktifkan Sidik Jari di menu Profil Saya."); return; }
-            try {
-                const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
-                const publicKey = { challenge: challenge, allowCredentials: [{ type: 'public-key', id: base64urlToBuffer(savedId) }], userVerification: "required" };
-                await navigator.credentials.get({ publicKey });
-                const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === window.normalizeWA(savedWa); });
-                if (customerData.length > 0) { window.handleLoginSuccess(customerData, savedWa); } else { alert("Data tidak ditemukan."); }
-            } catch(err) { alert("Pemindaian gagal. Silakan masuk manual dengan WA."); }
+            if (window.loginMode === 'admin') {
+                const savedId = localStorage.getItem('oz_biometric_admin_id');
+                if(!savedId) { alert("Sidik Jari Admin belum terdaftar. Login dengan Password, lalu aktifkan di menu Ikon Kunci (Ganti Password)."); return; }
+                try {
+                    const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
+                    const publicKey = { challenge: challenge, allowCredentials: [{ type: 'public-key', id: base64urlToBuffer(savedId) }], userVerification: "required" };
+                    await navigator.credentials.get({ publicKey });
+                    
+                    window.isReadOnly = false;
+                    window.currentLoggedWA = null;
+                    window.appData = window.allServerData;
+                    document.getElementById('admin-actions').style.display = 'flex';
+                    document.getElementById('search-input').style.display = 'block'; 
+                    document.getElementById('search-icon').style.display = 'block';
+                    document.getElementById('btn-profile').style.display = 'none';
+                    document.getElementById('nav-left').style.display = 'flex'; 
+                    document.getElementById('nav-right').style.display = 'flex';
+                    document.getElementById('auth-screen').classList.add('opacity-0');
+                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
+                    window.renderDashboard();
+                } catch(err) { alert("Pemindaian Admin gagal. Silakan masuk dengan Password."); }
+            } else {
+                const savedId = localStorage.getItem('oz_biometric_id'); const savedWa = localStorage.getItem('oz_biometric_wa');
+                if(!savedId || !savedWa) { alert("Perangkat belum terdaftar. Login manual dengan Nomor WA, lalu aktifkan Sidik Jari di menu Profil."); return; }
+                try {
+                    const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
+                    const publicKey = { challenge: challenge, allowCredentials: [{ type: 'public-key', id: base64urlToBuffer(savedId) }], userVerification: "required" };
+                    await navigator.credentials.get({ publicKey });
+                    const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === window.normalizeWA(savedWa); });
+                    if (customerData.length > 0) { window.handleLoginSuccess(customerData, savedWa); } else { alert("Data tidak ditemukan."); }
+                } catch(err) { alert("Pemindaian Nasabah gagal. Silakan masuk dengan WA."); }
+            }
         };
 
         document.getElementById('profile-upload').addEventListener('change', function(e) {
@@ -463,7 +539,6 @@
                 return acc;
             }, {});
             const customers = Object.values(groupedData);
-            document.getElementById('total-nasabah').textContent = `${customers.length} Nasabah`;
             
             let htmlContent = '';
             customers.forEach(function(customer) {
@@ -480,6 +555,10 @@
                 const shareBtn = !window.isReadOnly ? `<button type="button" onclick="window.openShareModal('${customer.items[0].wa}')" class="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500 hover:text-black transition-colors flex items-center justify-center shrink-0"><i class="fa-solid fa-share-nodes text-sm"></i></button>` : '';
                 htmlContent += `<div class="glass-card rounded-2xl flex flex-col relative overflow-hidden w-full flex-shrink-0 snap-center"><div class="p-4 border-b border-yellow-500/20 bg-black/20 flex items-center justify-between gap-3"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-full border border-yellow-500/30 overflow-hidden bg-gray-800 shrink-0"><img src="${avatarSrc}" class="w-full h-full object-cover"></div><div><h2 class="text-lg font-bold text-white leading-tight">${customer.name}</h2><p class="text-xs text-gray-400">${customer.items.length} Item Aktif</p></div></div>${shareBtn}</div><div class="p-4 flex-1 flex flex-col gap-3 custom-scroll max-h-[50vh] overflow-y-auto">${itemsHtml}</div><div class="p-4 border-t border-white/5 bg-gray-900/60 flex justify-between items-center mt-auto"><span class="text-xs text-gray-400 font-medium">Total Tagihan/Bln</span><span class="text-base font-bold text-yellow-400">${window.formatRp(totalTagihanNasabah)}</span></div></div>`;
             });
+
+            if(customers.length === 0 && !window.isReadOnly) {
+                htmlContent = `<div class="w-full text-center py-10 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3"></i><p>Tidak ada nasabah ditemukan.</p></div>`;
+            }
 
             document.getElementById('dashboard-grid').innerHTML = htmlContent;
             document.getElementById('carousel-indicators').innerHTML = Array(customers.length).fill('<div class="carousel-dot w-2 h-2 rounded-full bg-gray-600 transition-all duration-300"></div>').join('');
@@ -501,7 +580,27 @@
         
         window.autoAddHistory = function() { const historyField = document.getElementById('form-history'); const lunasField = document.getElementById('form-lunas'); const tagihanField = document.getElementById('form-tagihan'); const totalBulanField = document.getElementById('form-total-bulan'); const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); const nominal = window.formatRp(tagihanField.value || 0); let currentBulan = parseInt(lunasField.value) || 0; const totalBulan = parseInt(totalBulanField.value) || 1; if(currentBulan >= totalBulan) { alert("Cicilan ini sudah lunas sepenuhnya."); return; } const nextBulan = currentBulan + 1; const newEntry = `${date} - Bayar Bln ke-${nextBulan} (${nominal})`; historyField.value = historyField.value.trim() === '' ? newEntry : historyField.value + '\n' + newEntry; lunasField.value = nextBulan; };
         window.closeModal = function() { document.getElementById('form-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('form-modal-content').classList.remove('scale-100'); document.getElementById('form-modal-content').classList.add('scale-95'); };
-        window.slideCarousel = function(direction) { const container = document.getElementById('dashboard-grid'); container.scrollBy({ left: direction * container.clientWidth, behavior: 'smooth' }); };
+        
+        // FUNGSI SLIDE CAROUSEL LOOPING 
+        window.slideCarousel = function(direction) { 
+            const container = document.getElementById('dashboard-grid'); 
+            const scrollAmount = container.clientWidth;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            
+            // Loop ke paling akhir jika menekan kiri dari ujung awal
+            if (direction === -1 && container.scrollLeft <= 10) {
+                container.scrollTo({ left: maxScroll, behavior: 'smooth' });
+            } 
+            // Loop ke paling awal jika menekan kanan dari ujung akhir
+            else if (direction === 1 && container.scrollLeft >= maxScroll - 10) {
+                container.scrollTo({ left: 0, behavior: 'smooth' });
+            } 
+            // Slide normal
+            else {
+                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' }); 
+            }
+        };
+
         window.updateCarouselIndicator = function() { const container = document.getElementById('dashboard-grid'); const dots = document.querySelectorAll('.carousel-dot'); if(!dots.length) return; const index = Math.round(container.scrollLeft / container.clientWidth); dots.forEach(function(dot, i) { if (i === index) { dot.classList.replace('bg-gray-600', 'bg-yellow-400'); dot.classList.replace('w-2', 'w-6'); } else { dot.classList.replace('bg-yellow-400', 'bg-gray-600'); dot.classList.replace('w-6', 'w-2'); } }); };
         
         window.openProfileModal = function() { if(!window.currentLoggedWA) return; const cData = window.appData.find(function(d) { return window.normalizeWA(d.wa) === window.currentLoggedWA; }); if(!cData) return; document.getElementById('profile-name-input').value = cData.name; document.getElementById('profile-wa-input').value = cData.wa; window.temporaryBase64Photo = cData.photo || null; document.getElementById('profile-img-preview').src = window.temporaryBase64Photo ? window.temporaryBase64Photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(cData.name)}&background=fde047&color=000&size=150`; document.getElementById('profile-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-95'); document.getElementById('profile-modal-content').classList.add('scale-100'); };
@@ -522,7 +621,12 @@
                 if(itemIndex !== -1) window.allServerData[itemIndex] = { id: window.allServerData[itemIndex].id, name, item, tagihan, totalBulan, lunas, jatuhTempo, history, wa, photo: existingPhoto };
             } else { window.allServerData.push({ id: Date.now(), name, wa, item, tagihan, totalBulan, lunas, jatuhTempo, history, photo: existingPhoto }); }
             window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.normalizeWA(wa)) { d.name = name; d.wa = wa; } });
-            window.appData = window.allServerData; window.saveAppDataFirebase(); window.closeModal(); window.renderDashboard();
+            
+            // Jaga hasil pencarian jika sedang aktif
+            const query = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
+            if(query !== '') { window.searchNasabah(); } else { window.appData = window.allServerData; }
+            
+            window.saveAppDataFirebase(); window.closeModal(); window.renderDashboard();
         };
 
         window.openPwdModal = function() { document.getElementById('pwd-old').value = ''; document.getElementById('pwd-new').value = ''; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('pwd-success').style.display = 'none'; document.getElementById('pwd-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('pwd-modal-content').classList.remove('scale-95'); document.getElementById('pwd-modal-content').classList.add('scale-100'); };
