@@ -177,14 +177,13 @@
 
         // Konfigurasi Database Firebase Anda
         const firebaseConfig = {
-            apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4",
-            authDomain: "ozfinance-5fb9c.firebaseapp.com",
-            // Jika data tidak tersimpan, pastikan databaseURL ini sesuai dengan lokasi server yang Anda pilih saat mendaftar Firebase.
-            databaseURL: "https://ozfinance-5fb9c-default-rtdb.asia-southeast1.firebasedatabase.app", 
-            projectId: "ozfinance-5fb9c",
-            storageBucket: "ozfinance-5fb9c.firebasestorage.app",
-            messagingSenderId: "53300038907",
-            appId: "1:53300038907:web:2157b566d33b5bdbea745e"
+            const firebaseConfig = {
+    apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4",
+    authDomain: "ozfinance-5fb9c.firebaseapp.com",
+    databaseURL: "https://ozfinance-5fb9c-default-rtdb.firebaseio.com", // PASTIKAN URL INI BENAR
+    projectId: "ozfinance-5fb9c",
+    // ... (biarkan baris lain di bawahnya tetap sama)
+};
         };
 
         const app = initializeApp(firebaseConfig);
