@@ -24,7 +24,6 @@
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .glass-panel { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 204, 0, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
         .glass-card { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
-        .glass-card:hover { transform: translateY(-5px); border-color: rgba(255, 204, 0, 0.3); background: rgba(31, 41, 55, 0.8); box-shadow: 0 10px 25px rgba(255, 204, 0, 0.05); }
         .progress-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .shimmer { position: relative; overflow: hidden; }
         .shimmer::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%); transform: translateX(-100%); animation: shimmer 2.5s infinite; }
@@ -32,7 +31,6 @@
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 204, 0, 0.2); border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 204, 0, 0.4); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         html { scroll-behavior: smooth; }
@@ -84,7 +82,6 @@
                     <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(253,224,38,0.5)]">
                     <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-200">OZfinance</h1>
                 </div>
-                <!-- Teks Dashboard dihapus sesuai permintaan -->
             </div>
             
             <div id="header-actions" class="flex items-center gap-3 flex-wrap justify-center">
@@ -107,9 +104,8 @@
         </div>
 
         <div class="relative group/carousel">
-            <button type="button" id="nav-left" onclick="window.slideCarousel(-1)" class="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-yellow-500/90 hover:bg-yellow-400 text-black items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] backdrop-blur-sm transition-all opacity-0 group-hover/carousel:opacity-100 sm:flex" style="display: none;"><i class="fa-solid fa-chevron-left"></i></button>
+            <!-- Grid Container (Tombol Panah Dihapus) -->
             <div id="dashboard-grid" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-2" onscroll="window.updateCarouselIndicator()"></div>
-            <button type="button" id="nav-right" onclick="window.slideCarousel(1)" class="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-yellow-500/90 hover:bg-yellow-400 text-black items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] backdrop-blur-sm transition-all opacity-0 group-hover/carousel:opacity-100 sm:flex" style="display: none;"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         <div id="carousel-indicators" class="flex justify-center gap-2 mt-4 flex-wrap"></div>
     </div>
@@ -134,7 +130,7 @@
                     <p class="text-[10px] text-gray-500">Ketuk untuk ubah foto</p>
                 </div>
 
-                <div><label class="block text-xs text-gray-400 mb-1">Nama Lengkap</label><input type="text" id="profile-name-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
+                <div><label class="block text-xs text-gray-400 mb-1">Nama Tampilan Anda</label><input type="text" id="profile-name-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
                 
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Nomor WhatsApp (Terkunci)</label>
@@ -166,7 +162,7 @@
             <form id="data-form" onsubmit="event.preventDefault(); window.submitDataFormAction(); return false;" class="space-y-4">
                 <input type="hidden" id="form-id">
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs text-gray-400 mb-1">Nama Nasabah</label><input type="text" id="form-name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
+                    <div><label class="block text-xs text-gray-400 mb-1">Nama Asli Nasabah</label><input type="text" id="form-name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
                     <div><label class="block text-xs text-gray-400 mb-1">No. WA (Admin Bisa Edit)</label><input type="number" id="form-wa" placeholder="08123..." class="w-full bg-gray-800 border border-yellow-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm"></div>
                 </div>
                 <div><label class="block text-xs text-gray-400 mb-1">Jenis Cicilan / Item</label><input type="text" id="form-item" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
@@ -193,9 +189,6 @@
             </form>
         </div>
     </div>
-
-    <!-- Modal Share Link -->
-    <div id="share-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4"><div class="glass-panel w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900" id="share-modal-content"><div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3"><h3 class="text-lg font-bold text-white"><i class="fa-solid fa-share-nodes text-yellow-400 mr-2"></i> Tautan Nasabah</h3><button type="button" onclick="window.closeShareModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button></div><div class="flex items-center gap-2 mb-4"><input type="text" id="share-link-input" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-gray-300 text-xs focus:outline-none" readonly><button type="button" id="copy-btn" onclick="window.copyShareLink()" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-copy"></i> Salin</button></div></div></div>
     
     <!-- Modal Password Admin + Fingerprint -->
     <div id="pwd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
@@ -247,7 +240,6 @@
                 navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log('SW registration failed:', err));
             }
             
-            // Selalu tampilkan tombol install jika belum dalam mode standalone (aplikasi)
             if (!window.matchMedia('(display-mode: standalone)').matches) {
                 document.getElementById('btn-install-pwa').style.display = 'flex';
             }
@@ -273,7 +265,7 @@
             deferredPrompt = null;
         };
 
-        // INISIALISASI VARIABEL GLOBAL & FUNGSI UI
+        // INISIALISASI VARIABEL GLOBAL
         window.allServerData = [];
         window.appData = [];
         window.isReadOnly = false;
@@ -321,7 +313,6 @@
                 if (data) { Object.keys(data).forEach(function(key) { parsedData.push(data[key]); }); }
                 window.allServerData = parsedData;
                 
-                // Jika sedang melakukan pencarian, jangan reset appData otomatis
                 const searchQuery = document.getElementById('search-input') ? document.getElementById('search-input').value : '';
                 if(searchQuery.trim() === '') {
                     if(window.isReadOnly && window.currentLoggedWA) {
@@ -365,7 +356,7 @@
 
         window.switchTab = function(mode) {
             window.loginMode = mode;
-            document.getElementById('btn-biometric-login').style.display = 'flex'; // Selalu tampilkan biometric
+            document.getElementById('btn-biometric-login').style.display = 'flex';
 
             if (mode === 'nasabah') {
                 document.getElementById('tab-nasabah').className = 'flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all';
@@ -386,7 +377,7 @@
             }
         };
 
-        // FUNGSI PENCARIAN ADMIN
+        // FUNGSI PENCARIAN MENGGUNAKAN NAMA ASLI (ADMIN)
         window.searchNasabah = function() {
             if (window.isReadOnly) return;
             const query = document.getElementById('search-input').value.toLowerCase().trim();
@@ -394,6 +385,7 @@
                 window.appData = window.allServerData;
             } else {
                 window.appData = window.allServerData.filter(function(d) {
+                    // Cari berdasarkan Nama Asli (d.name) yang dikunci oleh admin
                     return (d.name && d.name.toLowerCase().includes(query)) || (d.wa && String(d.wa).includes(query));
                 });
             }
@@ -405,11 +397,9 @@
             window.appData = customerData;
             window.currentLoggedWA = window.normalizeWA(wa);
             document.getElementById('admin-actions').style.display = 'none'; 
-            document.getElementById('search-input').style.display = 'none'; // Sembunyikan Pencarian dari Nasabah
+            document.getElementById('search-input').style.display = 'none'; 
             document.getElementById('search-icon').style.display = 'none';
             document.getElementById('btn-profile').style.display = 'flex';
-            document.getElementById('nav-left').style.display = 'none'; 
-            document.getElementById('nav-right').style.display = 'none';
             document.getElementById('auth-screen').classList.add('opacity-0');
             setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
             window.renderDashboard();
@@ -425,11 +415,9 @@
                     window.currentLoggedWA = null;
                     window.appData = window.allServerData;
                     document.getElementById('admin-actions').style.display = 'flex';
-                    document.getElementById('search-input').style.display = 'block'; // Tampilkan Pencarian untuk Admin
+                    document.getElementById('search-input').style.display = 'block';
                     document.getElementById('search-icon').style.display = 'block';
                     document.getElementById('btn-profile').style.display = 'none';
-                    document.getElementById('nav-left').style.display = 'flex'; 
-                    document.getElementById('nav-right').style.display = 'flex';
                     document.getElementById('auth-screen').classList.add('opacity-0');
                     setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
                     window.renderDashboard();
@@ -493,8 +481,6 @@
                     document.getElementById('search-input').style.display = 'block'; 
                     document.getElementById('search-icon').style.display = 'block';
                     document.getElementById('btn-profile').style.display = 'none';
-                    document.getElementById('nav-left').style.display = 'flex'; 
-                    document.getElementById('nav-right').style.display = 'flex';
                     document.getElementById('auth-screen').classList.add('opacity-0');
                     setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
                     window.renderDashboard();
@@ -529,31 +515,101 @@
 
         window.formatRp = function(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); };
         window.getProgressColor = function(percent) { return percent === 0 ? 'from-red-600 to-orange-500' : percent < 50 ? 'from-orange-500 to-yellow-500' : percent < 80 ? 'from-yellow-500 to-yellow-400' : percent < 100 ? 'from-yellow-400 to-yellow-300' : 'from-green-500 to-green-400'; };
+        
+        // FUNGSI TOGGLE RINCIAN ITEM
+        window.toggleDetails = function(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden');
+        };
 
         window.renderDashboard = function() {
+            // Group data berdasarkan nama ASLI (d.name) yang dikunci oleh admin
             const groupedData = window.appData.reduce(function(acc, currentItem) {
                 if(!currentItem || !currentItem.name) return acc;
                 const nameKey = String(currentItem.name).trim().toUpperCase();
-                if (!acc[nameKey]) acc[nameKey] = { name: String(currentItem.name), items: [], photo: currentItem.photo };
+                if (!acc[nameKey]) acc[nameKey] = { 
+                    name: String(currentItem.name), 
+                    customName: currentItem.customName || String(currentItem.name), // Nama kustom dari Nasabah
+                    items: [], 
+                    photo: currentItem.photo 
+                };
                 acc[nameKey].items.push(currentItem);
                 return acc;
             }, {});
+            
             const customers = Object.values(groupedData);
             
             let htmlContent = '';
             customers.forEach(function(customer) {
                 let itemsHtml = ''; let totalTagihanNasabah = 0;
-                let avatarSrc = customer.photo ? customer.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name)}&background=fde047&color=000`;
+                
+                // Gunakan nama kustom (jika ada) untuk UI
+                let avatarSrc = customer.photo ? customer.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.customName)}&background=fde047&color=000`;
+                
                 customer.items.forEach(function(item) {
                     totalTagihanNasabah += parseInt(item.tagihan) || 0;
-                    const progressPercent = (item.lunas / (item.totalBulan || 1)) * 100; const isLunas = progressPercent >= 100; const colorClass = window.getProgressColor(progressPercent);
-                    const editBtn = !window.isReadOnly ? `<button type="button" onclick="window.openEditModal('${item.id}')" class="absolute top-3 right-3 text-gray-500 hover:text-yellow-400 z-10"><i class="fa-solid fa-pen-to-square text-sm"></i></button>` : '';
-                    const historyHtml = item.history ? `<div class="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[10px] text-gray-400 whitespace-pre-line leading-relaxed"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ${item.history}</div>` : '';
-                    itemsHtml += `<div class="bg-gray-900/50 rounded-xl p-3 border border-white/5 relative group/item transition-colors hover:bg-gray-800/80">${editBtn}<div class="pr-8 mb-2"><h3 class="text-yellow-400 text-sm font-bold flex items-center gap-1.5"><i class="fa-solid ${isLunas ? 'fa-check-circle text-green-500' : 'fa-box-open'}"></i> ${item.item || '-'}</h3></div><div class="flex justify-between text-xs mb-2"><span class="text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> ${item.jatuhTempo || '-'}</span><span class="text-white font-medium">${window.formatRp(item.tagihan)}/bln</span></div><div class="flex justify-between text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1.5"><span>Status: ${isLunas ? 'LUNAS' : item.lunas + '/' + item.totalBulan + ' BLN'}</span><span class="${isLunas ? 'text-green-500' : 'text-yellow-500'}">${progressPercent.toFixed(0)}%</span></div><div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden shadow-inner"><div class="h-full bg-gradient-to-r ${colorClass} rounded-full shimmer progress-fill" style="width: 0%" data-target="${progressPercent > 100 ? 100 : progressPercent}%"></div></div>${historyHtml}</div>`;
+                    const progressPercent = (item.lunas / (item.totalBulan || 1)) * 100; 
+                    const isLunas = progressPercent >= 100; 
+                    const colorClass = window.getProgressColor(progressPercent);
+                    
+                    // Kalkulasi Total & Sisa Pinjaman
+                    const totalPinjaman = parseInt(item.tagihan) * parseInt(item.totalBulan || 1);
+                    const totalTerbayar = parseInt(item.tagihan) * parseInt(item.lunas || 0);
+                    const sisaPinjaman = totalPinjaman - totalTerbayar;
+
+                    // event.stopPropagation() mencegah kartu terbuka tertutup saat tombol edit diklik
+                    const editBtn = !window.isReadOnly ? `<button type="button" onclick="event.stopPropagation(); window.openEditModal('${item.id}')" class="absolute top-3 right-3 text-gray-500 hover:text-yellow-400 z-10"><i class="fa-solid fa-pen-to-square text-sm"></i></button>` : '';
+                    
+                    itemsHtml += `
+                    <div class="bg-gray-900/50 rounded-xl p-3 border border-white/5 relative group/item transition-colors hover:bg-gray-800/80 cursor-pointer" onclick="window.toggleDetails('detail-${item.id}')">
+                        ${editBtn}
+                        <div class="pr-8 mb-2">
+                            <h3 class="text-yellow-400 text-sm font-bold flex items-center gap-1.5"><i class="fa-solid ${isLunas ? 'fa-check-circle text-green-500' : 'fa-box-open'}"></i> ${item.item || '-'}</h3>
+                        </div>
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> ${item.jatuhTempo || '-'}</span>
+                            <span class="text-white font-medium">${window.formatRp(item.tagihan)}/bln</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1.5">
+                            <span>Status: ${isLunas ? 'LUNAS' : item.lunas + '/' + item.totalBulan + ' BLN'}</span>
+                            <span class="${isLunas ? 'text-green-500' : 'text-yellow-500'}">${progressPercent.toFixed(0)}%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                            <div class="h-full bg-gradient-to-r ${colorClass} rounded-full shimmer progress-fill" style="width: 0%" data-target="${progressPercent > 100 ? 100 : progressPercent}%"></div>
+                        </div>
+                        
+                        <!-- Rincian Tersembunyi (Expandable) -->
+                        <div id="detail-${item.id}" class="hidden mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs">
+                            <div class="flex justify-between text-gray-300"><span>Total Pinjaman:</span><span class="font-bold text-white">${window.formatRp(totalPinjaman)}</span></div>
+                            <div class="flex justify-between text-gray-300"><span>Total Terbayar:</span><span class="font-bold text-green-400">${window.formatRp(totalTerbayar)}</span></div>
+                            <div class="flex justify-between text-gray-300"><span>Sisa Pinjaman:</span><span class="font-bold text-red-400">${window.formatRp(sisaPinjaman)}</span></div>
+                            <div class="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[10px] text-gray-400 whitespace-pre-line leading-relaxed">
+                                <div class="font-bold text-gray-300 mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Riwayat Pembayaran:</div>
+                                ${item.history ? item.history : 'Belum ada catatan pembayaran.'}
+                            </div>
+                        </div>
+                        
+                        <div class="text-[10px] text-gray-500 text-center mt-2 group-hover/item:text-yellow-500/50 transition-colors"><i class="fa-solid fa-chevron-down"></i> Klik untuk rincian</div>
+                    </div>`;
                 });
                 
-                const shareBtn = !window.isReadOnly ? `<button type="button" onclick="window.openShareModal('${customer.items[0].wa}')" class="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500 hover:text-black transition-colors flex items-center justify-center shrink-0"><i class="fa-solid fa-share-nodes text-sm"></i></button>` : '';
-                htmlContent += `<div class="glass-card rounded-2xl flex flex-col relative overflow-hidden w-full flex-shrink-0 snap-center"><div class="p-4 border-b border-yellow-500/20 bg-black/20 flex items-center justify-between gap-3"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-full border border-yellow-500/30 overflow-hidden bg-gray-800 shrink-0"><img src="${avatarSrc}" class="w-full h-full object-cover"></div><div><h2 class="text-lg font-bold text-white leading-tight">${customer.name}</h2><p class="text-xs text-gray-400">${customer.items.length} Item Aktif</p></div></div>${shareBtn}</div><div class="p-4 flex-1 flex flex-col gap-3 custom-scroll max-h-[50vh] overflow-y-auto">${itemsHtml}</div><div class="p-4 border-t border-white/5 bg-gray-900/60 flex justify-between items-center mt-auto"><span class="text-xs text-gray-400 font-medium">Total Tagihan/Bln</span><span class="text-base font-bold text-yellow-400">${window.formatRp(totalTagihanNasabah)}</span></div></div>`;
+                // Card Nasabah - Menampilkan customName
+                htmlContent += `
+                <div class="glass-card rounded-2xl flex flex-col relative overflow-hidden w-full flex-shrink-0 snap-center">
+                    <div class="p-4 border-b border-yellow-500/20 bg-black/20 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-full border border-yellow-500/30 overflow-hidden bg-gray-800 shrink-0"><img src="${avatarSrc}" class="w-full h-full object-cover"></div>
+                            <div>
+                                <h2 class="text-lg font-bold text-white leading-tight">${customer.customName}</h2>
+                                <p class="text-xs text-gray-400">${customer.items.length} Item Aktif</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col gap-3 custom-scroll max-h-[50vh] overflow-y-auto">${itemsHtml}</div>
+                    <div class="p-4 border-t border-white/5 bg-gray-900/60 flex justify-between items-center mt-auto">
+                        <span class="text-xs text-gray-400 font-medium">Total Tagihan/Bln</span><span class="text-base font-bold text-yellow-400">${window.formatRp(totalTagihanNasabah)}</span>
+                    </div>
+                </div>`;
             });
 
             if(customers.length === 0 && !window.isReadOnly) {
@@ -565,10 +621,6 @@
             window.updateCarouselIndicator();
             setTimeout(() => { document.querySelectorAll('.progress-fill').forEach(bar => { bar.style.width = bar.getAttribute('data-target'); }); }, 100);
         };
-
-        window.openShareModal = function(waNumber) { if(!waNumber) { alert("Isi nomor WA terlebih dahulu."); return; } const finalUrl = window.location.origin + window.location.pathname + "?wa=" + window.normalizeWA(waNumber); document.getElementById('share-link-input').value = finalUrl; document.getElementById('share-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-95'); document.getElementById('share-modal-content').classList.add('scale-100'); };
-        window.closeShareModal = function() { document.getElementById('share-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-100'); document.getElementById('share-modal-content').classList.add('scale-95'); };
-        window.copyShareLink = function() { document.getElementById('share-link-input').select(); document.execCommand('copy'); const btn = document.getElementById('copy-btn'); btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin'; setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Salin'; }, 2000); };
         
         window.resetDeleteBtn = function() { const btn = document.getElementById('btn-hapus'); btn.setAttribute('data-confirm', 'false'); btn.innerHTML = '<i class="fa-solid fa-trash"></i>'; btn.style.display = 'none'; };
         window.handleDeleteClick = function() { const btn = document.getElementById('btn-hapus'); if (btn.getAttribute('data-confirm') === 'true') { window.allServerData = window.allServerData.filter(function(d) { return String(d.id) !== String(document.getElementById('form-id').value); }); window.appData = window.allServerData; window.saveAppDataFirebase(); window.closeModal(); window.renderDashboard(); } else { btn.setAttribute('data-confirm', 'true'); btn.innerHTML = '<i class="fa-solid fa-question"></i> Yakin?'; btn.classList.replace('bg-red-600', 'bg-red-800'); clearTimeout(deleteConfirmTimeout); deleteConfirmTimeout = setTimeout(window.resetDeleteBtn, 3000); } };
@@ -581,48 +633,44 @@
         window.autoAddHistory = function() { const historyField = document.getElementById('form-history'); const lunasField = document.getElementById('form-lunas'); const tagihanField = document.getElementById('form-tagihan'); const totalBulanField = document.getElementById('form-total-bulan'); const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); const nominal = window.formatRp(tagihanField.value || 0); let currentBulan = parseInt(lunasField.value) || 0; const totalBulan = parseInt(totalBulanField.value) || 1; if(currentBulan >= totalBulan) { alert("Cicilan ini sudah lunas sepenuhnya."); return; } const nextBulan = currentBulan + 1; const newEntry = `${date} - Bayar Bln ke-${nextBulan} (${nominal})`; historyField.value = historyField.value.trim() === '' ? newEntry : historyField.value + '\n' + newEntry; lunasField.value = nextBulan; };
         window.closeModal = function() { document.getElementById('form-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('form-modal-content').classList.remove('scale-100'); document.getElementById('form-modal-content').classList.add('scale-95'); };
         
-        // FUNGSI SLIDE CAROUSEL LOOPING 
-        window.slideCarousel = function(direction) { 
-            const container = document.getElementById('dashboard-grid'); 
-            const scrollAmount = container.clientWidth;
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            
-            // Loop ke paling akhir jika menekan kiri dari ujung awal
-            if (direction === -1 && container.scrollLeft <= 10) {
-                container.scrollTo({ left: maxScroll, behavior: 'smooth' });
-            } 
-            // Loop ke paling awal jika menekan kanan dari ujung akhir
-            else if (direction === 1 && container.scrollLeft >= maxScroll - 10) {
-                container.scrollTo({ left: 0, behavior: 'smooth' });
-            } 
-            // Slide normal
-            else {
-                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' }); 
-            }
-        };
-
         window.updateCarouselIndicator = function() { const container = document.getElementById('dashboard-grid'); const dots = document.querySelectorAll('.carousel-dot'); if(!dots.length) return; const index = Math.round(container.scrollLeft / container.clientWidth); dots.forEach(function(dot, i) { if (i === index) { dot.classList.replace('bg-gray-600', 'bg-yellow-400'); dot.classList.replace('w-2', 'w-6'); } else { dot.classList.replace('bg-yellow-400', 'bg-gray-600'); dot.classList.replace('w-6', 'w-2'); } }); };
         
-        window.openProfileModal = function() { if(!window.currentLoggedWA) return; const cData = window.appData.find(function(d) { return window.normalizeWA(d.wa) === window.currentLoggedWA; }); if(!cData) return; document.getElementById('profile-name-input').value = cData.name; document.getElementById('profile-wa-input').value = cData.wa; window.temporaryBase64Photo = cData.photo || null; document.getElementById('profile-img-preview').src = window.temporaryBase64Photo ? window.temporaryBase64Photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(cData.name)}&background=fde047&color=000&size=150`; document.getElementById('profile-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-95'); document.getElementById('profile-modal-content').classList.add('scale-100'); };
+        window.openProfileModal = function() { if(!window.currentLoggedWA) return; const cData = window.appData.find(function(d) { return window.normalizeWA(d.wa) === window.currentLoggedWA; }); if(!cData) return; document.getElementById('profile-name-input').value = cData.customName || cData.name; document.getElementById('profile-wa-input').value = cData.wa; window.temporaryBase64Photo = cData.photo || null; document.getElementById('profile-img-preview').src = window.temporaryBase64Photo ? window.temporaryBase64Photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(cData.customName || cData.name)}&background=fde047&color=000&size=150`; document.getElementById('profile-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-95'); document.getElementById('profile-modal-content').classList.add('scale-100'); };
         window.closeProfileModal = function() { document.getElementById('profile-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-100'); document.getElementById('profile-modal-content').classList.add('scale-95'); };
         
+        // FUNGSI UPDATE CUSTOM NAME
         window.submitProfileForm = function() {
             const newName = document.getElementById('profile-name-input').value.trim();
-            if(window.allServerData.length > 0) { window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.currentLoggedWA) { d.name = newName; d.photo = window.temporaryBase64Photo || ""; } }); }
-            window.appData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.currentLoggedWA) { d.name = newName; d.photo = window.temporaryBase64Photo || ""; } });
+            if(window.allServerData.length > 0) { 
+                window.allServerData.forEach(function(d) { 
+                    if(window.normalizeWA(d.wa) === window.currentLoggedWA) { 
+                        d.customName = newName; // Disimpan sebagai nama kustom (alias)
+                        d.photo = window.temporaryBase64Photo || ""; 
+                    } 
+                }); 
+            }
+            window.appData.forEach(function(d) { 
+                if(window.normalizeWA(d.wa) === window.currentLoggedWA) { 
+                    d.customName = newName; 
+                    d.photo = window.temporaryBase64Photo || ""; 
+                } 
+            });
             window.saveAppDataFirebase(); window.closeProfileModal(); window.renderDashboard();
         };
 
         window.submitDataFormAction = function() {
             const idVal = document.getElementById('form-id').value; const name = document.getElementById('form-name').value.trim(); const wa = document.getElementById('form-wa').value.trim(); const item = document.getElementById('form-item').value.trim(); const tagihan = parseInt(document.getElementById('form-tagihan').value) || 0; const jatuhTempo = document.getElementById('form-jatuh-tempo').value.trim(); const totalBulan = parseInt(document.getElementById('form-total-bulan').value) || 1; let lunas = parseInt(document.getElementById('form-lunas').value) || 0; const history = document.getElementById('form-history').value.trim(); if(lunas > totalBulan) lunas = totalBulan;
-            let existingPhoto = ""; const existingCustomer = window.allServerData.find(function(d) { return window.normalizeWA(d.wa) === window.normalizeWA(wa); }); if(existingCustomer) existingPhoto = existingCustomer.photo;
+            let existingPhoto = ""; let existingCustomName = "";
+            const existingCustomer = window.allServerData.find(function(d) { return window.normalizeWA(d.wa) === window.normalizeWA(wa); }); 
+            if(existingCustomer) { existingPhoto = existingCustomer.photo; existingCustomName = existingCustomer.customName; }
             if (idVal) {
                 const itemIndex = window.allServerData.findIndex(function(d) { return String(d.id) === String(idVal); });
-                if(itemIndex !== -1) window.allServerData[itemIndex] = { id: window.allServerData[itemIndex].id, name, item, tagihan, totalBulan, lunas, jatuhTempo, history, wa, photo: existingPhoto };
-            } else { window.allServerData.push({ id: Date.now(), name, wa, item, tagihan, totalBulan, lunas, jatuhTempo, history, photo: existingPhoto }); }
+                if(itemIndex !== -1) window.allServerData[itemIndex] = { id: window.allServerData[itemIndex].id, name, customName: existingCustomName || name, item, tagihan, totalBulan, lunas, jatuhTempo, history, wa, photo: existingPhoto };
+            } else { window.allServerData.push({ id: Date.now(), name, customName: existingCustomName || name, wa, item, tagihan, totalBulan, lunas, jatuhTempo, history, photo: existingPhoto }); }
+            
+            // Samakan data root nama admin dan wa
             window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.normalizeWA(wa)) { d.name = name; d.wa = wa; } });
             
-            // Jaga hasil pencarian jika sedang aktif
             const query = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
             if(query !== '') { window.searchNasabah(); } else { window.appData = window.allServerData; }
             
