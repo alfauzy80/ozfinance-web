@@ -22,7 +22,6 @@
     <style>
         body { background: linear-gradient(-45deg, #000000, #111827, #1f2937, #000000); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        /* Glass Panel dihapus dari main container untuk efek tanpa frame */
         .glass-modal { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 204, 0, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
         .glass-card { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
         .progress-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -74,10 +73,9 @@
         </div>
     </div>
 
-    <!-- Main Container (Tanpa Frame / Tanpa Padding Luar / Lebar Penuh) -->
+    <!-- Main Container (Tanpa Frame) -->
     <div class="w-full max-w-none mx-0 px-2 py-4 md:px-6 md:py-6">
         
-        <!-- Header (Tanpa Frame) -->
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 px-2">
             <div class="text-center md:text-left flex-1">
                 <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
@@ -87,7 +85,6 @@
             </div>
             
             <div id="header-actions" class="flex items-center gap-3 flex-wrap justify-center">
-                <!-- Kolom Pencarian Admin -->
                 <div class="relative">
                     <input type="text" id="search-input" onkeyup="window.searchNasabah()" placeholder="Cari Nama / WA..." class="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 pl-10 text-white text-sm focus:outline-none focus:border-yellow-400 w-full sm:w-64 transition-all" style="display: none;">
                     <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" id="search-icon" style="display: none;"></i>
@@ -98,6 +95,7 @@
                 <button type="button" id="btn-profile" onclick="window.openProfileModal()" class="bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-user-circle text-lg"></i> Profil Saya</button>
                 
                 <div id="admin-actions" class="flex items-center gap-3" style="display: flex;">
+                    <button type="button" onclick="window.openTemplateModal()" class="w-11 h-11 rounded-xl bg-gray-800 border border-gray-700 hover:border-yellow-400 text-yellow-500 hover:text-yellow-300 flex items-center justify-center transition-all shadow-lg" title="Template Pengingat"><i class="fa-solid fa-bell"></i></button>
                     <button type="button" onclick="window.openPwdModal()" class="w-11 h-11 rounded-xl bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 flex items-center justify-center transition-all shadow-lg" title="Ganti Password & Fingerprint"><i class="fa-solid fa-key"></i></button>
                     <button type="button" onclick="window.openAddModal()" class="bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11"><i class="fa-solid fa-user-plus"></i> Nasabah Baru</button>
                 </div>
@@ -112,7 +110,7 @@
         <div id="carousel-indicators" class="flex justify-center gap-2 mt-4 flex-wrap px-2"></div>
     </div>
 
-    <!-- PROFILE MODAL (NASABAH) -->
+    <!-- PROFILE MODAL -->
     <div id="profile-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[150] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
         <div class="glass-modal w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900" id="profile-modal-content">
             <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
@@ -131,9 +129,7 @@
                     </div>
                     <p class="text-[10px] text-gray-500">Ketuk untuk ubah foto</p>
                 </div>
-
                 <div><label class="block text-xs text-gray-400 mb-1">Nama Tampilan Anda</label><input type="text" id="profile-name-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Nomor WhatsApp (Terkunci)</label>
                     <div class="relative">
@@ -142,14 +138,10 @@
                     </div>
                     <p class="text-[9px] text-red-400/80 mt-1">*Hanya admin yang dapat mengubah nomor WA.</p>
                 </div>
-
                 <button type="button" onclick="window.registerBiometrics('nasabah')" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2">
                     <i class="fa-solid fa-fingerprint"></i> Daftarkan Perangkat Ini (Biometrik)
                 </button>
-
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black rounded-xl py-3 text-sm font-bold shadow-lg transform hover:-translate-y-0.5 transition-all">Simpan Profil</button>
-                </div>
+                <div class="pt-2"><button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black rounded-xl py-3 text-sm font-bold shadow-lg transform hover:-translate-y-0.5 transition-all">Simpan Profil</button></div>
             </form>
         </div>
     </div>
@@ -170,7 +162,7 @@
                 <div><label class="block text-xs text-gray-400 mb-1">Jenis Cicilan / Item</label><input type="text" id="form-item" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs text-gray-400 mb-1">Tagihan/Bulan (Rp)</label><input type="number" id="form-tagihan" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                    <div><label class="block text-xs text-gray-400 mb-1">Jatuh Tempo</label><input type="text" id="form-jatuh-tempo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
+                    <div><label class="block text-xs text-gray-400 mb-1">Jatuh Tempo (Tgl)</label><input type="text" id="form-jatuh-tempo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" placeholder="Cth: 15" required></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs text-gray-400 mb-1">Total Tenor (Bulan)</label><input type="number" id="form-total-bulan" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
@@ -199,7 +191,6 @@
                 <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-yellow-400 mr-2"></i> Keamanan Admin</h3>
                 <button type="button" onclick="window.closePwdModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
-            
             <form onsubmit="event.preventDefault(); window.submitPwdAction(); return false;" class="space-y-4">
                 <div><label class="block text-xs text-gray-400 mb-1">Password Lama</label><input type="password" id="pwd-old" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div>
                 <div><label class="block text-xs text-gray-400 mb-1">Password Baru</label><input type="password" id="pwd-new" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div>
@@ -209,10 +200,29 @@
                 <button type="button" onclick="window.registerBiometrics('admin')" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2 mt-2">
                     <i class="fa-solid fa-fingerprint"></i> Daftarkan Sidik Jari Admin
                 </button>
-
                 <div class="pt-4 flex gap-3">
                     <button type="button" onclick="window.closePwdModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button>
                     <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Template Pengingat -->
+    <div id="template-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
+        <div class="glass-modal w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="template-modal-content">
+            <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
+                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-bell text-yellow-400 mr-2"></i> Template Pengingat</h3>
+                <button type="button" onclick="window.closeTemplateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            <form onsubmit="event.preventDefault(); window.submitTemplateAction(); return false;" class="space-y-4">
+                <p class="text-xs text-gray-400 leading-relaxed">Pesan ini akan otomatis muncul pada perangkat (dengan nada notifikasi) saat jatuh tempo kurang dari 2 hari.<br><br>Gunakan teks: <br><strong class="text-yellow-400">{nama}</strong> untuk nama nasabah<br><strong class="text-yellow-400">{item}</strong> untuk nama barang/cicilan.</p>
+                <div>
+                    <textarea id="template-text" rows="5" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-yellow-400 text-sm custom-scroll leading-relaxed" required></textarea>
+                </div>
+                <div class="pt-2 flex gap-3">
+                    <button type="button" onclick="window.closeTemplateModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold shadow-lg">Simpan</button>
                 </div>
             </form>
         </div>
@@ -241,67 +251,128 @@
                 const swBlob = new Blob([swCode], { type: 'text/javascript' });
                 navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log('SW registration failed:', err));
             }
-            
             if (!window.matchMedia('(display-mode: standalone)').matches) {
                 document.getElementById('btn-install-pwa').style.display = 'flex';
             }
         });
 
+        // GENERATOR SUARA NOTIFIKASI OFFLINE (Web Audio API)
+        window.playNotifSound = function() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine'; // Suara jernih
+                osc.frequency.setValueAtTime(880, ctx.currentTime); // Nada tinggi A5
+                osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5); // Turun cepat
+                gain.gain.setValueAtTime(1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5); // Fade out
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            } catch(e) { console.log("Audio not supported"); }
+        };
+
+        // SISTEM PENGINGAT (REMINDER 2 HARI)
+        window.checkReminders = function() {
+            // Minta Izin Notifikasi jika belum
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+
+            const defaultTemplate = "Hallo {nama} pembayaran untuk {item} bulan ini akan jatuh tempo dua hari lagi, abaikan pesan jika sudah dibayar. OZfinance";
+            const template = localStorage.getItem('ozfinance_reminder_template') || defaultTemplate;
+            
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1; // 1-12
+            
+            // Hitung target tanggal 2 hari ke depan
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 2);
+            const targetDayNumber = targetDate.getDate(); // Tanggal (1-31)
+            
+            window.appData.forEach(customer => {
+                customer.items.forEach(item => {
+                    const lunas = parseInt(item.lunas) || 0;
+                    const total = parseInt(item.totalBulan) || 1;
+                    
+                    if (lunas >= total) return; // Abaikan jika sudah lunas
+                    
+                    // Ambil angka dari teks jatuh tempo (contoh "15 Jan" menjadi 15)
+                    const itemDayNumber = parseInt(item.jatuhTempo); 
+                    
+                    if (!isNaN(itemDayNumber) && itemDayNumber === targetDayNumber) {
+                        // Kunci Notif per Bulan supaya tidak spam setiap reload
+                        const notifKey = `oz_notif_sent_${item.id}_bln_${currentMonth}`;
+                        
+                        if (!localStorage.getItem(notifKey)) {
+                            const cName = customer.customName || customer.name;
+                            const msg = template.replace('{nama}', cName).replace('{item}', item.item || 'cicilan');
+                            
+                            // Eksekusi Notifikasi Layar
+                            if (Notification.permission === "granted") {
+                                new Notification("Pengingat Jatuh Tempo", {
+                                    body: msg,
+                                    icon: "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0"
+                                });
+                            } else {
+                                alert("PENGINGAT OZfinance:\n\n" + msg);
+                            }
+                            
+                            // Bunyikan Suara Offline
+                            window.playNotifSound();
+                            
+                            // Simpan status sudah diingatkan bulan ini
+                            localStorage.setItem(notifKey, "true");
+                        }
+                    }
+                });
+            });
+        };
+
+        // ADMIN TEMPLATE MODAL
+        window.openTemplateModal = function() {
+            const defaultTemplate = "Hallo {nama} pembayaran untuk {item} bulan ini akan jatuh tempo dua hari lagi, abaikan pesan jika sudah dibayar. OZfinance";
+            document.getElementById('template-text').value = localStorage.getItem('ozfinance_reminder_template') || defaultTemplate;
+            document.getElementById('template-modal').classList.remove('opacity-0', 'pointer-events-none'); 
+            document.getElementById('template-modal-content').classList.remove('scale-95'); 
+            document.getElementById('template-modal-content').classList.add('scale-100'); 
+        };
+        window.closeTemplateModal = function() { 
+            document.getElementById('template-modal').classList.add('opacity-0', 'pointer-events-none'); 
+            document.getElementById('template-modal-content').classList.remove('scale-100'); 
+            document.getElementById('template-modal-content').classList.add('scale-95'); 
+        };
+        window.submitTemplateAction = function() {
+            const newTemplate = document.getElementById('template-text').value.trim();
+            localStorage.setItem('ozfinance_reminder_template', newTemplate);
+            alert("Template notifikasi berhasil disimpan!");
+            window.closeTemplateModal();
+        };
+
         // HANDLE TOMBOL INSTALL PWA
         let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
         window.triggerInstallPrompt = async function() {
-            if (!deferredPrompt) {
-                alert("Untuk Menginstal: Ketuk menu browser Chrome/Safari (titik tiga), lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen).");
-                return;
-            }
+            if (!deferredPrompt) { alert("Untuk Menginstal: Ketuk menu browser Chrome/Safari (titik tiga), lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen)."); return; }
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                document.getElementById('btn-install-pwa').style.display = 'none';
-            }
+            if (outcome === 'accepted') { document.getElementById('btn-install-pwa').style.display = 'none'; }
             deferredPrompt = null;
         };
 
         // INISIALISASI VARIABEL GLOBAL
-        window.allServerData = [];
-        window.appData = [];
-        window.isReadOnly = false;
-        window.adminPassword = localStorage.getItem('ozfinance_admin_pwd') || "0000";
-        window.loginMode = 'nasabah';
-        window.currentLoggedWA = null;
-        window.temporaryBase64Photo = null;
-        let deleteConfirmTimeout;
+        window.allServerData = []; window.appData = []; window.isReadOnly = false; window.adminPassword = localStorage.getItem('ozfinance_admin_pwd') || "0000"; window.loginMode = 'nasabah'; window.currentLoggedWA = null; window.temporaryBase64Photo = null; let deleteConfirmTimeout;
 
-        window.normalizeWA = function(num) {
-            if (!num) return "";
-            let str = String(num).replace(/\D/g, ''); 
-            if (str.startsWith('08')) str = '62' + str.substring(1); 
-            return str;
-        };
-
-        window.showLoading = function(text) { 
-            document.getElementById('loading-text').innerText = text || "Memproses..."; 
-            document.getElementById('loading-overlay').style.display = 'flex'; 
-        };
-        window.hideLoading = function() { 
-            document.getElementById('loading-overlay').style.display = 'none'; 
-        };
+        window.normalizeWA = function(num) { if (!num) return ""; let str = String(num).replace(/\D/g, ''); if (str.startsWith('08')) str = '62' + str.substring(1); return str; };
+        window.showLoading = function(text) { document.getElementById('loading-text').innerText = text || "Memproses..."; document.getElementById('loading-overlay').style.display = 'flex'; };
+        window.hideLoading = function() { document.getElementById('loading-overlay').style.display = 'none'; };
 
         // KONFIGURASI FIREBASE MENGGUNAKAN SDK COMPAT
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4",
-            authDomain: "ozfinance-5fb9c.firebaseapp.com",
-            databaseURL: "https://ozfinance-5fb9c-default-rtdb.asia-southeast1.firebasedatabase.app/", 
-            projectId: "ozfinance-5fb9c",
-            storageBucket: "ozfinance-5fb9c.firebasestorage.app",
-            messagingSenderId: "53300038907",
-            appId: "1:53300038907:web:2157b566d33b5bdbea745e"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4", authDomain: "ozfinance-5fb9c.firebaseapp.com", databaseURL: "https://ozfinance-5fb9c-default-rtdb.asia-southeast1.firebasedatabase.app/", projectId: "ozfinance-5fb9c", storageBucket: "ozfinance-5fb9c.firebasestorage.app", messagingSenderId: "53300038907", appId: "1:53300038907:web:2157b566d33b5bdbea745e" };
 
         let dbRef;
         try {
@@ -324,23 +395,18 @@
                     }
                 }
                 
-                if (document.getElementById('auth-screen').style.display === 'none') window.renderDashboard();
+                if (document.getElementById('auth-screen').style.display === 'none') {
+                    window.renderDashboard();
+                    // Jalankan Pengecekan Pengingat
+                    setTimeout(window.checkReminders, 2000); 
+                }
                 window.hideLoading();
-            }, function(error) {
-                alert("Kesalahan Koneksi Firebase. Detail: " + error.message);
-                window.hideLoading();
-            });
+            }, function(error) { alert("Kesalahan Koneksi Firebase. Detail: " + error.message); window.hideLoading(); });
 
             window.saveAppDataFirebase = function() {
                 window.showLoading("Menyimpan ke Cloud...");
-                const dataObj = {};
-                window.allServerData.forEach(function(d) { dataObj[d.id] = d; });
-                dbRef.set(dataObj).then(function() {
-                    window.hideLoading();
-                }).catch(function(e) {
-                    alert("Gagal menyimpan ke Firebase Database: " + e.message);
-                    window.hideLoading();
-                });
+                const dataObj = {}; window.allServerData.forEach(function(d) { dataObj[d.id] = d; });
+                dbRef.set(dataObj).then(function() { window.hideLoading(); }).catch(function(e) { alert("Gagal menyimpan ke Firebase Database: " + e.message); window.hideLoading(); });
             };
         } catch (e) { alert("Sistem Firebase Gagal Memuat: " + e.message); window.hideLoading(); }
 
@@ -359,7 +425,6 @@
         window.switchTab = function(mode) {
             window.loginMode = mode;
             document.getElementById('btn-biometric-login').style.display = 'flex';
-
             if (mode === 'nasabah') {
                 document.getElementById('tab-nasabah').className = 'flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all';
                 document.getElementById('tab-admin').className = 'flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all';
@@ -379,96 +444,65 @@
             }
         };
 
-        // FUNGSI PENCARIAN
         window.searchNasabah = function() {
             if (window.isReadOnly) return;
             const query = document.getElementById('search-input').value.toLowerCase().trim();
-            if (!query) {
-                window.appData = window.allServerData;
-            } else {
-                window.appData = window.allServerData.filter(function(d) {
-                    return (d.name && d.name.toLowerCase().includes(query)) || (d.wa && String(d.wa).includes(query));
-                });
+            if (!query) { window.appData = window.allServerData; } else {
+                window.appData = window.allServerData.filter(function(d) { return (d.name && d.name.toLowerCase().includes(query)) || (d.wa && String(d.wa).includes(query)); });
             }
             window.renderDashboard();
         };
 
         window.handleLoginSuccess = function(customerData, wa) {
-            window.isReadOnly = true;
-            window.appData = customerData;
-            window.currentLoggedWA = window.normalizeWA(wa);
-            document.getElementById('admin-actions').style.display = 'none'; 
-            document.getElementById('search-input').style.display = 'none'; 
-            document.getElementById('search-icon').style.display = 'none';
-            document.getElementById('btn-profile').style.display = 'flex';
-            document.getElementById('nav-left').style.display = 'none';
-            document.getElementById('nav-right').style.display = 'none';
+            window.isReadOnly = true; window.appData = customerData; window.currentLoggedWA = window.normalizeWA(wa);
+            document.getElementById('admin-actions').style.display = 'none'; document.getElementById('search-input').style.display = 'none'; document.getElementById('search-icon').style.display = 'none'; document.getElementById('btn-profile').style.display = 'flex'; document.getElementById('nav-left').style.display = 'none'; document.getElementById('nav-right').style.display = 'none';
             document.getElementById('auth-screen').classList.add('opacity-0');
-            setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
-            window.renderDashboard();
+            
+            // Trigger izin notifikasi
+            if (Notification.permission !== "granted") { Notification.requestPermission(); }
+
+            setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; window.renderDashboard(); window.checkReminders(); }, 500);
         };
 
         window.processLoginAction = function() {
-            const input = document.getElementById('auth-input').value.trim();
-            const errorDiv = document.getElementById('auth-error');
+            const input = document.getElementById('auth-input').value.trim(); const errorDiv = document.getElementById('auth-error');
             
+            // Trigger izin notifikasi
+            if (Notification.permission !== "granted") { Notification.requestPermission(); }
+
             if (window.loginMode === 'admin') {
                 if (input === window.adminPassword) {
-                    window.isReadOnly = false;
-                    window.currentLoggedWA = null;
-                    window.appData = window.allServerData;
-                    document.getElementById('admin-actions').style.display = 'flex';
-                    document.getElementById('search-input').style.display = 'block';
-                    document.getElementById('search-icon').style.display = 'block';
-                    document.getElementById('btn-profile').style.display = 'none';
-                    document.getElementById('nav-left').style.display = 'flex';
-                    document.getElementById('nav-right').style.display = 'flex';
+                    window.isReadOnly = false; window.currentLoggedWA = null; window.appData = window.allServerData;
+                    document.getElementById('admin-actions').style.display = 'flex'; document.getElementById('search-input').style.display = 'block'; document.getElementById('search-icon').style.display = 'block'; document.getElementById('btn-profile').style.display = 'none'; document.getElementById('nav-left').style.display = 'flex'; document.getElementById('nav-right').style.display = 'flex';
                     document.getElementById('auth-screen').classList.add('opacity-0');
-                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
-                    window.renderDashboard();
-                } else {
-                    errorDiv.textContent = 'Password admin salah!';
-                    errorDiv.style.display = 'block';
-                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
-                }
+                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; window.renderDashboard(); window.checkReminders(); }, 500);
+                } else { errorDiv.textContent = 'Password admin salah!'; errorDiv.style.display = 'block'; setTimeout(function() { errorDiv.style.display = 'none'; }, 3000); }
             } else {
                 const normalizedInput = window.normalizeWA(input);
                 const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === normalizedInput; });
-                if (customerData.length > 0) { window.handleLoginSuccess(customerData, normalizedInput); } 
-                else {
-                    errorDiv.textContent = 'Nomor WA salah atau belum terdaftar!';
-                    errorDiv.style.display = 'block';
-                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
-                }
+                if (customerData.length > 0) { window.handleLoginSuccess(customerData, normalizedInput); } else { errorDiv.textContent = 'Nomor WA salah atau belum terdaftar!'; errorDiv.style.display = 'block'; setTimeout(function() { errorDiv.style.display = 'none'; }, 3000); }
             }
         };
 
-        // BIOMETRIK
         function bufferToBase64url(buffer) { const bytes = new Uint8Array(buffer); let str = ''; for (let char of bytes) str += String.fromCharCode(char); return window.btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ""); }
         function base64urlToBuffer(base64url) { const padding = '='.repeat((4 - base64url.length % 4) % 4); const base64 = (base64url + padding).replace(/\-/g, "+").replace(/_/g, "/"); const str = window.atob(base64); const buffer = new ArrayBuffer(str.length); const bytes = new Uint8Array(buffer); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i); return buffer; }
         
         window.registerBiometrics = async function(role) {
             if (!window.PublicKeyCredential) { alert("Perangkat Anda tidak mendukung fitur WebAuthn/Sidik Jari."); return; }
             try {
-                const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
-                const userID = new Uint8Array(16); window.crypto.getRandomValues(userID);
-                const uName = role === 'admin' ? "Admin OZfinance" : window.currentLoggedWA;
-                const dName = role === 'admin' ? "Administrator" : "Nasabah";
+                const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge); const userID = new Uint8Array(16); window.crypto.getRandomValues(userID); const uName = role === 'admin' ? "Admin OZfinance" : window.currentLoggedWA; const dName = role === 'admin' ? "Administrator" : "Nasabah";
                 const publicKey = { challenge: challenge, rp: { name: "OZfinance System" }, user: { id: userID, name: uName, displayName: dName }, pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }], authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" }, timeout: 60000 };
                 const credential = await navigator.credentials.create({ publicKey });
                 
-                if (role === 'admin') {
-                    localStorage.setItem('oz_biometric_admin_id', bufferToBase64url(credential.rawId));
-                    alert("Sidik Jari Admin Berhasil Didaftarkan!");
-                } else {
-                    localStorage.setItem('oz_biometric_id', bufferToBase64url(credential.rawId)); 
-                    localStorage.setItem('oz_biometric_wa', window.currentLoggedWA);
-                    alert("Sidik Jari Nasabah Berhasil Didaftarkan!");
-                }
+                if (role === 'admin') { localStorage.setItem('oz_biometric_admin_id', bufferToBase64url(credential.rawId)); alert("Sidik Jari Admin Berhasil Didaftarkan!");
+                } else { localStorage.setItem('oz_biometric_id', bufferToBase64url(credential.rawId)); localStorage.setItem('oz_biometric_wa', window.currentLoggedWA); alert("Sidik Jari Nasabah Berhasil Didaftarkan!"); }
             } catch (err) { alert("Pendaftaran Biometrik dibatalkan."); }
         };
 
         window.loginWithBiometrics = async function() {
+            // Trigger izin notifikasi
+            if (Notification.permission !== "granted") { Notification.requestPermission(); }
+
             if (window.loginMode === 'admin') {
                 const savedId = localStorage.getItem('oz_biometric_admin_id');
                 if(!savedId) { alert("Sidik Jari Admin belum terdaftar. Login dengan Password, lalu aktifkan di menu Ikon Kunci (Ganti Password)."); return; }
@@ -476,19 +510,10 @@
                     const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                     const publicKey = { challenge: challenge, allowCredentials: [{ type: 'public-key', id: base64urlToBuffer(savedId) }], userVerification: "required" };
                     await navigator.credentials.get({ publicKey });
-                    
-                    window.isReadOnly = false;
-                    window.currentLoggedWA = null;
-                    window.appData = window.allServerData;
-                    document.getElementById('admin-actions').style.display = 'flex';
-                    document.getElementById('search-input').style.display = 'block'; 
-                    document.getElementById('search-icon').style.display = 'block';
-                    document.getElementById('btn-profile').style.display = 'none';
-                    document.getElementById('nav-left').style.display = 'flex';
-                    document.getElementById('nav-right').style.display = 'flex';
+                    window.isReadOnly = false; window.currentLoggedWA = null; window.appData = window.allServerData;
+                    document.getElementById('admin-actions').style.display = 'flex'; document.getElementById('search-input').style.display = 'block'; document.getElementById('search-icon').style.display = 'block'; document.getElementById('btn-profile').style.display = 'none'; document.getElementById('nav-left').style.display = 'flex'; document.getElementById('nav-right').style.display = 'flex';
                     document.getElementById('auth-screen').classList.add('opacity-0');
-                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
-                    window.renderDashboard();
+                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; window.renderDashboard(); window.checkReminders(); }, 500);
                 } catch(err) { alert("Pemindaian Admin gagal. Silakan masuk dengan Password."); }
             } else {
                 const savedId = localStorage.getItem('oz_biometric_id'); const savedWa = localStorage.getItem('oz_biometric_wa');
@@ -504,13 +529,11 @@
         };
 
         document.getElementById('profile-upload').addEventListener('change', function(e) {
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader(); reader.readAsDataURL(file);
+            const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.readAsDataURL(file);
             reader.onload = function(event) {
                 const img = new Image(); img.src = event.target.result;
                 img.onload = function() {
-                    const canvas = document.createElement('canvas'); const scaleSize = 150 / img.width;
-                    canvas.width = 150; canvas.height = img.height * scaleSize;
+                    const canvas = document.createElement('canvas'); const scaleSize = 150 / img.width; canvas.width = 150; canvas.height = img.height * scaleSize;
                     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
                     window.temporaryBase64Photo = canvas.toDataURL('image/jpeg', 0.6);
                     document.getElementById('profile-img-preview').src = window.temporaryBase64Photo;
@@ -521,42 +544,20 @@
         window.formatRp = function(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); };
         window.getProgressColor = function(percent) { return percent === 0 ? 'from-red-600 to-orange-500' : percent < 50 ? 'from-orange-500 to-yellow-500' : percent < 80 ? 'from-yellow-500 to-yellow-400' : percent < 100 ? 'from-yellow-400 to-yellow-300' : 'from-green-500 to-green-400'; };
         
-        // FUNGSI TOGGLE RINCIAN ITEM
-        window.toggleDetails = function(id) {
-            const el = document.getElementById(id);
-            if (el) el.classList.toggle('hidden');
-        };
+        window.toggleDetails = function(id) { const el = document.getElementById(id); if (el) el.classList.toggle('hidden'); };
 
-        // FUNGSI SLIDE CAROUSEL LOOPING INSTAN (Maju/Mundur Tanpa Animasi Roll Back)
         window.slideCarousel = function(direction) { 
-            const container = document.getElementById('dashboard-grid'); 
-            const scrollAmount = container.clientWidth;
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            
-            if (direction === -1 && container.scrollLeft <= 10) {
-                // Instan pindah ke paling akhir tanpa smooth
-                container.scrollTo({ left: maxScroll, behavior: 'auto' });
-            } 
-            else if (direction === 1 && container.scrollLeft >= maxScroll - 10) {
-                // Instan pindah ke paling awal tanpa smooth
-                container.scrollTo({ left: 0, behavior: 'auto' });
-            } 
-            else {
-                // Geser normal pakai smooth
-                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' }); 
-            }
+            const container = document.getElementById('dashboard-grid'); const scrollAmount = container.clientWidth; const maxScroll = container.scrollWidth - container.clientWidth;
+            if (direction === -1 && container.scrollLeft <= 10) { container.scrollTo({ left: maxScroll, behavior: 'auto' }); } 
+            else if (direction === 1 && container.scrollLeft >= maxScroll - 10) { container.scrollTo({ left: 0, behavior: 'auto' }); } 
+            else { container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' }); }
         };
 
         window.renderDashboard = function() {
             const groupedData = window.appData.reduce(function(acc, currentItem) {
                 if(!currentItem || !currentItem.name) return acc;
                 const nameKey = String(currentItem.name).trim().toUpperCase();
-                if (!acc[nameKey]) acc[nameKey] = { 
-                    name: String(currentItem.name), 
-                    customName: currentItem.customName || String(currentItem.name),
-                    items: [], 
-                    photo: currentItem.photo 
-                };
+                if (!acc[nameKey]) acc[nameKey] = { name: String(currentItem.name), customName: currentItem.customName || String(currentItem.name), items: [], photo: currentItem.photo };
                 acc[nameKey].items.push(currentItem);
                 return acc;
             }, {});
@@ -566,50 +567,26 @@
             let htmlContent = '';
             customers.forEach(function(customer) {
                 let itemsHtml = ''; let totalTagihanNasabah = 0;
-                
                 let avatarSrc = customer.photo ? customer.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.customName)}&background=fde047&color=000`;
                 
                 customer.items.forEach(function(item) {
                     totalTagihanNasabah += parseInt(item.tagihan) || 0;
-                    const progressPercent = (item.lunas / (item.totalBulan || 1)) * 100; 
-                    const isLunas = progressPercent >= 100; 
-                    const colorClass = window.getProgressColor(progressPercent);
-                    
-                    // Kalkulasi Tenor
-                    const totalBulan = parseInt(item.totalBulan || 1);
-                    const lunasBulan = parseInt(item.lunas || 0);
-                    const sisaBulan = totalBulan - lunasBulan;
-
+                    const progressPercent = (item.lunas / (item.totalBulan || 1)) * 100; const isLunas = progressPercent >= 100; const colorClass = window.getProgressColor(progressPercent);
+                    const totalBulan = parseInt(item.totalBulan || 1); const lunasBulan = parseInt(item.lunas || 0); const sisaBulan = totalBulan - lunasBulan;
                     const editBtn = !window.isReadOnly ? `<button type="button" onclick="event.stopPropagation(); window.openEditModal('${item.id}')" class="absolute top-3 right-3 text-gray-500 hover:text-yellow-400 z-10"><i class="fa-solid fa-pen-to-square text-sm"></i></button>` : '';
                     
                     itemsHtml += `
                     <div class="bg-gray-900/50 rounded-xl p-3 border border-white/5 relative group/item transition-colors hover:bg-gray-800/80 cursor-pointer" onclick="window.toggleDetails('detail-${item.id}')">
                         ${editBtn}
-                        <div class="pr-8 mb-2">
-                            <h3 class="text-yellow-400 text-sm font-bold flex items-center gap-1.5"><i class="fa-solid ${isLunas ? 'fa-check-circle text-green-500' : 'fa-box-open'}"></i> ${item.item || '-'}</h3>
-                        </div>
-                        <div class="flex justify-between text-xs mb-2">
-                            <span class="text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> ${item.jatuhTempo || '-'}</span>
-                            <span class="text-white font-medium">${window.formatRp(item.tagihan)}/bln</span>
-                        </div>
-                        <div class="flex justify-between text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1.5">
-                            <span>Status: ${isLunas ? 'LUNAS' : item.lunas + '/' + item.totalBulan + ' BLN'}</span>
-                            <span class="${isLunas ? 'text-green-500' : 'text-yellow-500'}">${progressPercent.toFixed(0)}%</span>
-                        </div>
-                        <div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                            <div class="h-full bg-gradient-to-r ${colorClass} rounded-full shimmer progress-fill" style="width: 0%" data-target="${progressPercent > 100 ? 100 : progressPercent}%"></div>
-                        </div>
-                        
-                        <!-- Rincian Tersembunyi -->
+                        <div class="pr-8 mb-2"><h3 class="text-yellow-400 text-sm font-bold flex items-center gap-1.5"><i class="fa-solid ${isLunas ? 'fa-check-circle text-green-500' : 'fa-box-open'}"></i> ${item.item || '-'}</h3></div>
+                        <div class="flex justify-between text-xs mb-2"><span class="text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> Tgl ${item.jatuhTempo || '-'}</span><span class="text-white font-medium">${window.formatRp(item.tagihan)}/bln</span></div>
+                        <div class="flex justify-between text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1.5"><span>Status: ${isLunas ? 'LUNAS' : item.lunas + '/' + item.totalBulan + ' BLN'}</span><span class="${isLunas ? 'text-green-500' : 'text-yellow-500'}">${progressPercent.toFixed(0)}%</span></div>
+                        <div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden shadow-inner"><div class="h-full bg-gradient-to-r ${colorClass} rounded-full shimmer progress-fill" style="width: 0%" data-target="${progressPercent > 100 ? 100 : progressPercent}%"></div></div>
                         <div id="detail-${item.id}" class="hidden mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs">
                             <div class="flex justify-between text-gray-300"><span>Tenor Pinjaman:</span><span class="font-bold text-white">${totalBulan} Bulan</span></div>
                             <div class="flex justify-between text-gray-300"><span>Sisa Tenor:</span><span class="font-bold text-yellow-400">${sisaBulan} Bulan</span></div>
-                            <div class="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[10px] text-gray-400 whitespace-pre-line leading-relaxed">
-                                <div class="font-bold text-gray-300 mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Riwayat Pembayaran:</div>
-                                ${item.history ? item.history : 'Belum ada catatan pembayaran.'}
-                            </div>
+                            <div class="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[10px] text-gray-400 whitespace-pre-line leading-relaxed"><div class="font-bold text-gray-300 mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Riwayat Pembayaran:</div>${item.history ? item.history : 'Belum ada catatan pembayaran.'}</div>
                         </div>
-                        
                         <div class="text-[10px] text-gray-500 text-center mt-2 group-hover/item:text-yellow-500/50 transition-colors"><i class="fa-solid fa-chevron-down"></i> Klik untuk rincian</div>
                     </div>`;
                 });
@@ -619,22 +596,15 @@
                     <div class="p-4 border-b border-yellow-500/20 bg-black/20 flex items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
                             <div class="w-11 h-11 rounded-full border border-yellow-500/30 overflow-hidden bg-gray-800 shrink-0"><img src="${avatarSrc}" class="w-full h-full object-cover"></div>
-                            <div>
-                                <h2 class="text-lg font-bold text-white leading-tight">${customer.customName}</h2>
-                                <p class="text-xs text-gray-400">${customer.items.length} Item Aktif</p>
-                            </div>
+                            <div><h2 class="text-lg font-bold text-white leading-tight">${customer.customName}</h2><p class="text-xs text-gray-400">${customer.items.length} Item Aktif</p></div>
                         </div>
                     </div>
                     <div class="p-4 flex-1 flex flex-col gap-3 custom-scroll max-h-[50vh] overflow-y-auto">${itemsHtml}</div>
-                    <div class="p-4 border-t border-white/5 bg-gray-900/60 flex justify-between items-center mt-auto">
-                        <span class="text-xs text-gray-400 font-medium">Total Tagihan/Bln</span><span class="text-base font-bold text-yellow-400">${window.formatRp(totalTagihanNasabah)}</span>
-                    </div>
+                    <div class="p-4 border-t border-white/5 bg-gray-900/60 flex justify-between items-center mt-auto"><span class="text-xs text-gray-400 font-medium">Total Tagihan/Bln</span><span class="text-base font-bold text-yellow-400">${window.formatRp(totalTagihanNasabah)}</span></div>
                 </div>`;
             });
 
-            if(customers.length === 0 && !window.isReadOnly) {
-                htmlContent = `<div class="w-full text-center py-10 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3"></i><p>Tidak ada nasabah ditemukan.</p></div>`;
-            }
+            if(customers.length === 0 && !window.isReadOnly) { htmlContent = `<div class="w-full text-center py-10 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3"></i><p>Tidak ada nasabah ditemukan.</p></div>`; }
 
             document.getElementById('dashboard-grid').innerHTML = htmlContent;
             document.getElementById('carousel-indicators').innerHTML = Array(customers.length).fill('<div class="carousel-dot w-2 h-2 rounded-full bg-gray-600 transition-all duration-300"></div>').join('');
@@ -660,20 +630,8 @@
         
         window.submitProfileForm = function() {
             const newName = document.getElementById('profile-name-input').value.trim();
-            if(window.allServerData.length > 0) { 
-                window.allServerData.forEach(function(d) { 
-                    if(window.normalizeWA(d.wa) === window.currentLoggedWA) { 
-                        d.customName = newName; 
-                        d.photo = window.temporaryBase64Photo || ""; 
-                    } 
-                }); 
-            }
-            window.appData.forEach(function(d) { 
-                if(window.normalizeWA(d.wa) === window.currentLoggedWA) { 
-                    d.customName = newName; 
-                    d.photo = window.temporaryBase64Photo || ""; 
-                } 
-            });
+            if(window.allServerData.length > 0) { window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.currentLoggedWA) { d.customName = newName; d.photo = window.temporaryBase64Photo || ""; } }); }
+            window.appData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.currentLoggedWA) { d.customName = newName; d.photo = window.temporaryBase64Photo || ""; } });
             window.saveAppDataFirebase(); window.closeProfileModal(); window.renderDashboard();
         };
 
