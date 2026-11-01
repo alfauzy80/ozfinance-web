@@ -213,7 +213,9 @@
         const firebaseConfig = {
             apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4",
             authDomain: "ozfinance-5fb9c.firebaseapp.com",
-            databaseURL: "https://ozfinance-5fb9c-default-rtdb.firebaseio.com", 
+            // PENTING: Cek URL ini di Firebase Console Anda. Jika Anda memilih server Singapura, 
+            // URL-nya mungkin berakhiran .asia-southeast1.firebasedatabase.app
+            databaseURL: "https://ozfinance-5fb9c-default-rtdb.asia-southeast1.firebasedatabase.app/", 
             projectId: "ozfinance-5fb9c",
             storageBucket: "ozfinance-5fb9c.firebasestorage.app",
             messagingSenderId: "53300038907",
@@ -226,10 +228,13 @@
             const db = firebase.database();
             dbRef = db.ref('ozfinance_data');
 
+            // MENDENGARKAN DATA REALTIME (Pengganti onValue)
             dbRef.on('value', function(snapshot) {
                 const data = snapshot.val();
                 let parsedData = [];
-                if (data) { Object.keys(data).forEach(function(key) { parsedData.push(data[key]); }); }
+                if (data) { 
+                    Object.keys(data).forEach(function(key) { parsedData.push(data[key]); }); 
+                }
                 window.allServerData = parsedData;
                 
                 if(window.isReadOnly && window.currentLoggedWA) {
@@ -241,7 +246,8 @@
                 }
                 window.hideLoading();
             }, function(error) {
-                alert("Kesalahan Membaca Data Firebase (Pastikan Rules bernilai true). Detail: " + error.message);
+                // INI ADALAH PENANGKAP ERROR-NYA
+                alert("Kesalahan Koneksi Firebase (Pastikan Rules bernilai true). Detail: " + error.message);
                 window.hideLoading();
             });
 
