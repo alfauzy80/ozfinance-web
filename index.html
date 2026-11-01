@@ -147,7 +147,7 @@
                 <h3 id="modal-title" class="text-lg font-bold text-white"><i class="fa-solid fa-pen-to-square text-yellow-400 mr-2"></i> Edit Data</h3>
                 <button type="button" onclick="window.closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
-            <form onsubmit="event.preventDefault(); window.submitDataFormAction(); return false;" class="space-y-4">
+            <form id="data-form" onsubmit="event.preventDefault(); window.submitDataFormAction(); return false;" class="space-y-4">
                 <input type="hidden" id="form-id">
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs text-gray-400 mb-1">Nama Nasabah</label><input type="text" id="form-name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
