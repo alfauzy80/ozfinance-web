@@ -8,6 +8,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
+    <!-- PWA CONFIGURATION & MANIFEST -->
+    <meta name="theme-color" content="#fde047">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0">
+    <link id="dynamic-manifest" rel="manifest" href="">
+
     <!-- FIREBASE COMPAT SDK (ANTI CRASH MODULE) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -50,7 +57,6 @@
                 <button type="button" id="tab-admin" onclick="window.switchTab('admin')" class="flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all">Admin</button>
             </div>
 
-            <!-- EVENT LISTENER ON SUBMIT DIKUNCI MATI -->
             <form id="auth-form" onsubmit="event.preventDefault(); window.processLoginAction(); return false;" class="space-y-4 relative z-10">
                 <input type="number" id="auth-input" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-center tracking-widest focus:outline-none focus:border-yellow-400 transition-colors" placeholder="Contoh: 0812... atau 628..." required>
                 
@@ -60,7 +66,6 @@
                     <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(255,204,0,0.3)] hover:scale-105 transition-transform flex items-center justify-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Masuk
                     </button>
-                    <!-- BIOMETRIK BUTTON (Menggunakan style display) -->
                     <button type="button" id="btn-biometric-login" onclick="window.loginWithBiometrics()" class="w-full bg-gray-800 border border-gray-700 text-white font-bold py-3 rounded-xl hover:border-yellow-400 hover:text-yellow-400 transition-colors items-center justify-center gap-2" style="display: flex;">
                         <i class="fa-solid fa-fingerprint text-lg"></i> Sidik Jari / FaceID
                     </button>
@@ -80,7 +85,10 @@
                 <p class="text-gray-400 text-sm">Dashboard <span id="total-nasabah" class="ml-2 font-bold text-gray-900 px-2 py-0.5 bg-yellow-400 rounded">0 Nasabah</span></p>
             </div>
             
-            <div id="header-actions" class="flex items-center gap-3">
+            <div id="header-actions" class="flex items-center gap-3 flex-wrap justify-center">
+                <!-- Tombol Install PWA Otomatis -->
+                <button type="button" id="btn-install-pwa" onclick="window.triggerInstallPrompt()" class="bg-yellow-500/20 border border-yellow-500/50 hover:bg-yellow-500 hover:text-black text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-download"></i> Install Aplikasi</button>
+                
                 <button type="button" id="btn-profile" onclick="window.openProfileModal()" class="bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-user-circle text-lg"></i> Profil Saya</button>
                 
                 <div id="admin-actions" class="flex items-center gap-3" style="display: flex;">
@@ -184,6 +192,60 @@
     <div id="pwd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4"><div class="glass-panel w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="pwd-modal-content"><div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3"><h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-yellow-400 mr-2"></i> Ganti Password</h3><button type="button" onclick="window.closePwdModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button></div><form onsubmit="event.preventDefault(); window.submitPwdAction(); return false;" class="space-y-4"><div><label class="block text-xs text-gray-400 mb-1">Password Lama</label><input type="password" id="pwd-old" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div><div><label class="block text-xs text-gray-400 mb-1">Password Baru</label><input type="password" id="pwd-new" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div><div id="pwd-error" class="text-red-400 text-xs font-medium bg-red-500/10 py-2 rounded-lg text-center" style="display: none;"></div><div id="pwd-success" class="text-green-400 text-xs font-bold bg-green-500/10 py-2 rounded-lg text-center" style="display: none;">Tersimpan!</div><div class="pt-4 flex gap-3"><button type="button" onclick="window.closePwdModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button><button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold">Simpan</button></div></form></div></div>
 
     <script>
+        // INISIALISASI PWA OTOMATIS (MANIFEST & SERVICE WORKER DALAM 1 FILE)
+        document.addEventListener("DOMContentLoaded", function() {
+            const manifestData = {
+                "name": "OZfinance Super Dashboard",
+                "short_name": "OZfinance",
+                "start_url": "./index.html",
+                "display": "standalone",
+                "background_color": "#000000",
+                "theme_color": "#fde047",
+                "icons": [
+                    {
+                        "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0",
+                        "sizes": "192x192",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+            document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
+
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => { self.skipWaiting(); });
+                    self.addEventListener('activate', e => { self.clients.claim(); });
+                    self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+                `;
+                const swBlob = new Blob([swCode], { type: 'text/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log('SW registration failed:', err));
+            }
+        });
+
+        // HANDLE TOMBOL INSTALL PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('btn-install-pwa').style.display = 'flex';
+        });
+
+        window.triggerInstallPrompt = async function() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                document.getElementById('btn-install-pwa').style.display = 'none';
+            }
+            deferredPrompt = null;
+        };
+
         // INISIALISASI VARIABEL GLOBAL & FUNGSI UI
         window.allServerData = [];
         window.appData = [];
@@ -213,8 +275,6 @@
         const firebaseConfig = {
             apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4",
             authDomain: "ozfinance-5fb9c.firebaseapp.com",
-            // PENTING: Cek URL ini di Firebase Console Anda. Jika Anda memilih server Singapura, 
-            // URL-nya mungkin berakhiran .asia-southeast1.firebasedatabase.app
             databaseURL: "https://ozfinance-5fb9c-default-rtdb.asia-southeast1.firebasedatabase.app/", 
             projectId: "ozfinance-5fb9c",
             storageBucket: "ozfinance-5fb9c.firebasestorage.app",
@@ -228,7 +288,6 @@
             const db = firebase.database();
             dbRef = db.ref('ozfinance_data');
 
-            // MENDENGARKAN DATA REALTIME (Pengganti onValue)
             dbRef.on('value', function(snapshot) {
                 const data = snapshot.val();
                 let parsedData = [];
@@ -246,7 +305,6 @@
                 }
                 window.hideLoading();
             }, function(error) {
-                // INI ADALAH PENANGKAP ERROR-NYA
                 alert("Kesalahan Koneksi Firebase (Pastikan Rules bernilai true). Detail: " + error.message);
                 window.hideLoading();
             });
@@ -267,7 +325,6 @@
             window.hideLoading();
         }
 
-        // FUNGSI DETEKSI URL OTOMATIS (Vercel By-Pass)
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const passedWA = urlParams.get('wa');
@@ -282,7 +339,6 @@
             }
         };
 
-        // FUNGSI LOGIN
         window.switchTab = function(mode) {
             window.loginMode = mode;
             if (mode === 'nasabah') {
@@ -353,7 +409,6 @@
             }
         };
 
-        // FUNGSI BIOMETRIK
         function bufferToBase64url(buffer) { const bytes = new Uint8Array(buffer); let str = ''; for (let char of bytes) str += String.fromCharCode(char); return window.btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ""); }
         function base64urlToBuffer(base64url) { const padding = '='.repeat((4 - base64url.length % 4) % 4); const base64 = (base64url + padding).replace(/\-/g, "+").replace(/_/g, "/"); const str = window.atob(base64); const buffer = new ArrayBuffer(str.length); const bytes = new Uint8Array(buffer); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i); return buffer; }
         
@@ -396,7 +451,6 @@
             };
         });
 
-        // FUNGSI RENDER DASHBOARD & MODAL
         window.formatRp = function(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); };
         window.getProgressColor = function(percent) { return percent === 0 ? 'from-red-600 to-orange-500' : percent < 50 ? 'from-orange-500 to-yellow-500' : percent < 80 ? 'from-yellow-500 to-yellow-400' : percent < 100 ? 'from-yellow-400 to-yellow-300' : 'from-green-500 to-green-400'; };
 
@@ -433,7 +487,6 @@
             setTimeout(() => { document.querySelectorAll('.progress-fill').forEach(bar => { bar.style.width = bar.getAttribute('data-target'); }); }, 100);
         };
 
-        // FUNGSI LAINNYA
         window.openShareModal = function(waNumber) { if(!waNumber) { alert("Isi nomor WA terlebih dahulu."); return; } const finalUrl = window.location.origin + window.location.pathname + "?wa=" + window.normalizeWA(waNumber); document.getElementById('share-link-input').value = finalUrl; document.getElementById('share-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-95'); document.getElementById('share-modal-content').classList.add('scale-100'); };
         window.closeShareModal = function() { document.getElementById('share-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-100'); document.getElementById('share-modal-content').classList.add('scale-95'); };
         window.copyShareLink = function() { document.getElementById('share-link-input').select(); document.execCommand('copy'); const btn = document.getElementById('copy-btn'); btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin'; setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Salin'; }, 2000); };
@@ -474,7 +527,7 @@
 
         window.openPwdModal = function() { document.getElementById('pwd-old').value = ''; document.getElementById('pwd-new').value = ''; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('pwd-success').style.display = 'none'; document.getElementById('pwd-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('pwd-modal-content').classList.remove('scale-95'); document.getElementById('pwd-modal-content').classList.add('scale-100'); };
         window.closePwdModal = function() { document.getElementById('pwd-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('pwd-modal-content').classList.remove('scale-100'); document.getElementById('pwd-modal-content').classList.add('scale-95'); };
-        window.submitPwdAction = function() { if (document.getElementById('pwd-old').value !== window.adminPassword) { document.getElementById('pwd-error').textContent = "Password lama salah!"; document.getElementById('pwd-error').style.display = 'block'; return; } window.adminPassword = document.getElementById('pwd-new').value; localStorage.setItem(PWD_STORAGE_KEY, window.adminPassword); document.getElementById('pwd-success').style.display = 'block'; setTimeout(window.closePwdModal, 1500); };
+        window.submitPwdAction = function() { if (document.getElementById('pwd-old').value !== window.adminPassword) { document.getElementById('pwd-error').textContent = "Password lama salah!"; document.getElementById('pwd-error').style.display = 'block'; return; } window.adminPassword = document.getElementById('pwd-new').value; localStorage.setItem('ozfinance_admin_pwd', window.adminPassword); document.getElementById('pwd-success').style.display = 'block'; setTimeout(window.closePwdModal, 1500); };
     </script>
 </body>
 </html>
