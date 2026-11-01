@@ -20,9 +20,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <style>
-        body { background: linear-gradient(-45deg, #000000, #111827, #1f2937, #000000); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #f8fafc; min-height: 100vh; }
+        body { background: linear-gradient(-45deg, #000000, #111827, #1f2937, #000000); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .glass-panel { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 204, 0, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
+        /* Glass Panel dihapus dari main container untuk efek tanpa frame */
+        .glass-modal { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 204, 0, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
         .glass-card { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
         .progress-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .shimmer { position: relative; overflow: hidden; }
@@ -36,7 +37,7 @@
         html { scroll-behavior: smooth; }
     </style>
 </head>
-<body class="p-4 md:p-8 font-sans antialiased relative">
+<body class="font-sans antialiased relative m-0 p-0">
 
     <div id="loading-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[200] flex-col items-center justify-center transition-opacity duration-300" style="display: flex;">
         <i class="fa-solid fa-circle-notch fa-spin text-5xl text-yellow-400 mb-4 drop-shadow-[0_0_15px_rgba(255,204,0,0.5)]"></i>
@@ -44,8 +45,8 @@
     </div>
 
     <!-- Login Screen -->
-    <div id="auth-screen" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center transition-opacity duration-500" style="display: flex;">
-        <div class="glass-panel p-8 rounded-3xl max-w-sm w-full mx-4 text-center border border-yellow-500/20 relative overflow-hidden">
+    <div id="auth-screen" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center transition-opacity duration-500 p-4" style="display: flex;">
+        <div class="glass-modal p-8 rounded-3xl max-w-sm w-full text-center border border-yellow-500/20 relative overflow-hidden">
             <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-20 h-20 mx-auto mb-4 object-contain drop-shadow-[0_0_15px_rgba(253,224,38,0.6)]">
             
             <h2 id="auth-title" class="text-2xl font-bold text-white mb-2">Login Nasabah</h2>
@@ -65,7 +66,6 @@
                     <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(255,204,0,0.3)] hover:scale-105 transition-transform flex items-center justify-center gap-2">
                         <i class="fa-solid fa-right-to-bracket"></i> Masuk
                     </button>
-                    <!-- Biometrik Muncul untuk Nasabah & Admin -->
                     <button type="button" id="btn-biometric-login" onclick="window.loginWithBiometrics()" class="w-full bg-gray-800 border border-gray-700 text-white font-bold py-3 rounded-xl hover:border-yellow-400 hover:text-yellow-400 transition-colors items-center justify-center gap-2" style="display: flex;">
                         <i class="fa-solid fa-fingerprint text-lg"></i> Sidik Jari / FaceID
                     </button>
@@ -74,9 +74,11 @@
         </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="max-w-7xl mx-auto glass-panel rounded-3xl p-6 md:p-10">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+    <!-- Main Container (Tanpa Frame / Tanpa Padding Luar / Lebar Penuh) -->
+    <div class="w-full max-w-none mx-0 px-2 py-4 md:px-6 md:py-6">
+        
+        <!-- Header (Tanpa Frame) -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 px-2">
             <div class="text-center md:text-left flex-1">
                 <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
                     <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(253,224,38,0.5)]">
@@ -91,7 +93,6 @@
                     <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" id="search-icon" style="display: none;"></i>
                 </div>
 
-                <!-- Tombol Install PWA -->
                 <button type="button" id="btn-install-pwa" onclick="window.triggerInstallPrompt()" class="bg-yellow-500/20 border border-yellow-500/50 hover:bg-yellow-500 hover:text-black text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-download"></i> Install Aplikasi</button>
                 
                 <button type="button" id="btn-profile" onclick="window.openProfileModal()" class="bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 h-11 transition-all" style="display: none;"><i class="fa-solid fa-user-circle text-lg"></i> Profil Saya</button>
@@ -103,16 +104,17 @@
             </div>
         </div>
 
-        <div class="relative group/carousel">
-            <!-- Grid Container (Tombol Panah Dihapus) -->
-            <div id="dashboard-grid" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar pb-2" onscroll="window.updateCarouselIndicator()"></div>
+        <div class="relative group/carousel w-full">
+            <button type="button" id="nav-left" onclick="window.slideCarousel(-1)" class="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-yellow-500/90 hover:bg-yellow-400 text-black items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] backdrop-blur-sm transition-all opacity-0 group-hover/carousel:opacity-100 sm:flex" style="display: none;"><i class="fa-solid fa-chevron-left"></i></button>
+            <div id="dashboard-grid" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 no-scrollbar pb-2 px-2" onscroll="window.updateCarouselIndicator()"></div>
+            <button type="button" id="nav-right" onclick="window.slideCarousel(1)" class="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-yellow-500/90 hover:bg-yellow-400 text-black items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] backdrop-blur-sm transition-all opacity-0 group-hover/carousel:opacity-100 sm:flex" style="display: none;"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-        <div id="carousel-indicators" class="flex justify-center gap-2 mt-4 flex-wrap"></div>
+        <div id="carousel-indicators" class="flex justify-center gap-2 mt-4 flex-wrap px-2"></div>
     </div>
 
     <!-- PROFILE MODAL (NASABAH) -->
     <div id="profile-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[150] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900" id="profile-modal-content">
+        <div class="glass-modal w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900" id="profile-modal-content">
             <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
                 <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-user-edit text-yellow-400 mr-2"></i> Edit Profil</h3>
                 <button type="button" onclick="window.closeProfileModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
@@ -154,7 +156,7 @@
 
     <!-- Edit/Add Modal (Admin) -->
     <div id="form-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-panel w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 custom-scroll max-h-[95vh] overflow-y-auto" id="form-modal-content">
+        <div class="glass-modal w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 custom-scroll max-h-[95vh] overflow-y-auto" id="form-modal-content">
             <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3 sticky top-0 bg-gray-900 z-10">
                 <h3 id="modal-title" class="text-lg font-bold text-white"><i class="fa-solid fa-pen-to-square text-yellow-400 mr-2"></i> Edit Data</h3>
                 <button type="button" onclick="window.closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
@@ -192,7 +194,7 @@
     
     <!-- Modal Password Admin + Fingerprint -->
     <div id="pwd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="pwd-modal-content">
+        <div class="glass-modal w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="pwd-modal-content">
             <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
                 <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-yellow-400 mr-2"></i> Keamanan Admin</h3>
                 <button type="button" onclick="window.closePwdModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
@@ -377,7 +379,7 @@
             }
         };
 
-        // FUNGSI PENCARIAN MENGGUNAKAN NAMA ASLI (ADMIN)
+        // FUNGSI PENCARIAN
         window.searchNasabah = function() {
             if (window.isReadOnly) return;
             const query = document.getElementById('search-input').value.toLowerCase().trim();
@@ -385,7 +387,6 @@
                 window.appData = window.allServerData;
             } else {
                 window.appData = window.allServerData.filter(function(d) {
-                    // Cari berdasarkan Nama Asli (d.name) yang dikunci oleh admin
                     return (d.name && d.name.toLowerCase().includes(query)) || (d.wa && String(d.wa).includes(query));
                 });
             }
@@ -400,6 +401,8 @@
             document.getElementById('search-input').style.display = 'none'; 
             document.getElementById('search-icon').style.display = 'none';
             document.getElementById('btn-profile').style.display = 'flex';
+            document.getElementById('nav-left').style.display = 'none';
+            document.getElementById('nav-right').style.display = 'none';
             document.getElementById('auth-screen').classList.add('opacity-0');
             setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
             window.renderDashboard();
@@ -418,6 +421,8 @@
                     document.getElementById('search-input').style.display = 'block';
                     document.getElementById('search-icon').style.display = 'block';
                     document.getElementById('btn-profile').style.display = 'none';
+                    document.getElementById('nav-left').style.display = 'flex';
+                    document.getElementById('nav-right').style.display = 'flex';
                     document.getElementById('auth-screen').classList.add('opacity-0');
                     setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
                     window.renderDashboard();
@@ -438,7 +443,7 @@
             }
         };
 
-        // BIOMETRIK ADMIN & NASABAH
+        // BIOMETRIK
         function bufferToBase64url(buffer) { const bytes = new Uint8Array(buffer); let str = ''; for (let char of bytes) str += String.fromCharCode(char); return window.btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ""); }
         function base64urlToBuffer(base64url) { const padding = '='.repeat((4 - base64url.length % 4) % 4); const base64 = (base64url + padding).replace(/\-/g, "+").replace(/_/g, "/"); const str = window.atob(base64); const buffer = new ArrayBuffer(str.length); const bytes = new Uint8Array(buffer); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i); return buffer; }
         
@@ -447,10 +452,8 @@
             try {
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const userID = new Uint8Array(16); window.crypto.getRandomValues(userID);
-                
                 const uName = role === 'admin' ? "Admin OZfinance" : window.currentLoggedWA;
                 const dName = role === 'admin' ? "Administrator" : "Nasabah";
-
                 const publicKey = { challenge: challenge, rp: { name: "OZfinance System" }, user: { id: userID, name: uName, displayName: dName }, pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }], authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" }, timeout: 60000 };
                 const credential = await navigator.credentials.create({ publicKey });
                 
@@ -481,6 +484,8 @@
                     document.getElementById('search-input').style.display = 'block'; 
                     document.getElementById('search-icon').style.display = 'block';
                     document.getElementById('btn-profile').style.display = 'none';
+                    document.getElementById('nav-left').style.display = 'flex';
+                    document.getElementById('nav-right').style.display = 'flex';
                     document.getElementById('auth-screen').classList.add('opacity-0');
                     setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; }, 500);
                     window.renderDashboard();
@@ -522,14 +527,33 @@
             if (el) el.classList.toggle('hidden');
         };
 
+        // FUNGSI SLIDE CAROUSEL LOOPING INSTAN (Maju/Mundur Tanpa Animasi Roll Back)
+        window.slideCarousel = function(direction) { 
+            const container = document.getElementById('dashboard-grid'); 
+            const scrollAmount = container.clientWidth;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            
+            if (direction === -1 && container.scrollLeft <= 10) {
+                // Instan pindah ke paling akhir tanpa smooth
+                container.scrollTo({ left: maxScroll, behavior: 'auto' });
+            } 
+            else if (direction === 1 && container.scrollLeft >= maxScroll - 10) {
+                // Instan pindah ke paling awal tanpa smooth
+                container.scrollTo({ left: 0, behavior: 'auto' });
+            } 
+            else {
+                // Geser normal pakai smooth
+                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' }); 
+            }
+        };
+
         window.renderDashboard = function() {
-            // Group data berdasarkan nama ASLI (d.name) yang dikunci oleh admin
             const groupedData = window.appData.reduce(function(acc, currentItem) {
                 if(!currentItem || !currentItem.name) return acc;
                 const nameKey = String(currentItem.name).trim().toUpperCase();
                 if (!acc[nameKey]) acc[nameKey] = { 
                     name: String(currentItem.name), 
-                    customName: currentItem.customName || String(currentItem.name), // Nama kustom dari Nasabah
+                    customName: currentItem.customName || String(currentItem.name),
                     items: [], 
                     photo: currentItem.photo 
                 };
@@ -543,7 +567,6 @@
             customers.forEach(function(customer) {
                 let itemsHtml = ''; let totalTagihanNasabah = 0;
                 
-                // Gunakan nama kustom (jika ada) untuk UI
                 let avatarSrc = customer.photo ? customer.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.customName)}&background=fde047&color=000`;
                 
                 customer.items.forEach(function(item) {
@@ -552,12 +575,11 @@
                     const isLunas = progressPercent >= 100; 
                     const colorClass = window.getProgressColor(progressPercent);
                     
-                    // Kalkulasi Total & Sisa Pinjaman
-                    const totalPinjaman = parseInt(item.tagihan) * parseInt(item.totalBulan || 1);
-                    const totalTerbayar = parseInt(item.tagihan) * parseInt(item.lunas || 0);
-                    const sisaPinjaman = totalPinjaman - totalTerbayar;
+                    // Kalkulasi Tenor
+                    const totalBulan = parseInt(item.totalBulan || 1);
+                    const lunasBulan = parseInt(item.lunas || 0);
+                    const sisaBulan = totalBulan - lunasBulan;
 
-                    // event.stopPropagation() mencegah kartu terbuka tertutup saat tombol edit diklik
                     const editBtn = !window.isReadOnly ? `<button type="button" onclick="event.stopPropagation(); window.openEditModal('${item.id}')" class="absolute top-3 right-3 text-gray-500 hover:text-yellow-400 z-10"><i class="fa-solid fa-pen-to-square text-sm"></i></button>` : '';
                     
                     itemsHtml += `
@@ -578,11 +600,10 @@
                             <div class="h-full bg-gradient-to-r ${colorClass} rounded-full shimmer progress-fill" style="width: 0%" data-target="${progressPercent > 100 ? 100 : progressPercent}%"></div>
                         </div>
                         
-                        <!-- Rincian Tersembunyi (Expandable) -->
+                        <!-- Rincian Tersembunyi -->
                         <div id="detail-${item.id}" class="hidden mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs">
-                            <div class="flex justify-between text-gray-300"><span>Total Pinjaman:</span><span class="font-bold text-white">${window.formatRp(totalPinjaman)}</span></div>
-                            <div class="flex justify-between text-gray-300"><span>Total Terbayar:</span><span class="font-bold text-green-400">${window.formatRp(totalTerbayar)}</span></div>
-                            <div class="flex justify-between text-gray-300"><span>Sisa Pinjaman:</span><span class="font-bold text-red-400">${window.formatRp(sisaPinjaman)}</span></div>
+                            <div class="flex justify-between text-gray-300"><span>Tenor Pinjaman:</span><span class="font-bold text-white">${totalBulan} Bulan</span></div>
+                            <div class="flex justify-between text-gray-300"><span>Sisa Tenor:</span><span class="font-bold text-yellow-400">${sisaBulan} Bulan</span></div>
                             <div class="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[10px] text-gray-400 whitespace-pre-line leading-relaxed">
                                 <div class="font-bold text-gray-300 mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Riwayat Pembayaran:</div>
                                 ${item.history ? item.history : 'Belum ada catatan pembayaran.'}
@@ -593,7 +614,6 @@
                     </div>`;
                 });
                 
-                // Card Nasabah - Menampilkan customName
                 htmlContent += `
                 <div class="glass-card rounded-2xl flex flex-col relative overflow-hidden w-full flex-shrink-0 snap-center">
                     <div class="p-4 border-b border-yellow-500/20 bg-black/20 flex items-center justify-between gap-3">
@@ -638,13 +658,12 @@
         window.openProfileModal = function() { if(!window.currentLoggedWA) return; const cData = window.appData.find(function(d) { return window.normalizeWA(d.wa) === window.currentLoggedWA; }); if(!cData) return; document.getElementById('profile-name-input').value = cData.customName || cData.name; document.getElementById('profile-wa-input').value = cData.wa; window.temporaryBase64Photo = cData.photo || null; document.getElementById('profile-img-preview').src = window.temporaryBase64Photo ? window.temporaryBase64Photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(cData.customName || cData.name)}&background=fde047&color=000&size=150`; document.getElementById('profile-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-95'); document.getElementById('profile-modal-content').classList.add('scale-100'); };
         window.closeProfileModal = function() { document.getElementById('profile-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-100'); document.getElementById('profile-modal-content').classList.add('scale-95'); };
         
-        // FUNGSI UPDATE CUSTOM NAME
         window.submitProfileForm = function() {
             const newName = document.getElementById('profile-name-input').value.trim();
             if(window.allServerData.length > 0) { 
                 window.allServerData.forEach(function(d) { 
                     if(window.normalizeWA(d.wa) === window.currentLoggedWA) { 
-                        d.customName = newName; // Disimpan sebagai nama kustom (alias)
+                        d.customName = newName; 
                         d.photo = window.temporaryBase64Photo || ""; 
                     } 
                 }); 
@@ -668,7 +687,6 @@
                 if(itemIndex !== -1) window.allServerData[itemIndex] = { id: window.allServerData[itemIndex].id, name, customName: existingCustomName || name, item, tagihan, totalBulan, lunas, jatuhTempo, history, wa, photo: existingPhoto };
             } else { window.allServerData.push({ id: Date.now(), name, customName: existingCustomName || name, wa, item, tagihan, totalBulan, lunas, jatuhTempo, history, photo: existingPhoto }); }
             
-            // Samakan data root nama admin dan wa
             window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.normalizeWA(wa)) { d.name = name; d.wa = wa; } });
             
             const query = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
