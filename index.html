@@ -3,605 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OZfinance Super Dashboard</title>
+    <title>OZdigi Ecosystem - Beranda & Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- PWA CONFIGURATION & MANIFEST -->
-    <meta name="theme-color" content="#fde047">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0">
-    <link id="dynamic-manifest" rel="manifest" href="">
-
-    <!-- FIREBASE COMPAT SDK (ANTI CRASH MODULE) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
-    <style>
-        body { background: linear-gradient(-45deg, #000000, #111827, #1f2937, #000000); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .glass-modal { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 204, 0, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
-        .glass-card { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
-        .progress-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .shimmer { position: relative; overflow: hidden; }
-        .shimmer::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%); transform: translateX(-100%); animation: shimmer 2.5s infinite; }
-        @keyframes shimmer { 100% { transform: translateX(100%); } }
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 204, 0, 0.2); border-radius: 10px; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        html { scroll-behavior: smooth; }
-        
-        /* SEMBUNYIKAN PANAH DI HP AGAR SIMETRIS & LEBIH RAPI (CUKUP SWIPE) */
-        @media (max-width: 768px) {
-            #nav-left, #nav-right { display: none !important; }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        ozgold: { 400: '#FBBF24', 500: '#F59E0B', 600: '#D97706' },
+                        darkblue: { 800: '#1E293B', 900: '#0F172A', 950: '#020617' }
+                    }
+                }
+            }
         }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            background-image: radial-gradient(circle at 50% 0%, #1E293B 0%, #0F172A 70%, #020617 100%);
+            background-attachment: fixed;
+            color: #F8FAFC;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        .text-gradient-gold {
+            background: linear-gradient(to right, #FBBF24, #F59E0B, #D97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hidden-section { display: none !important; }
     </style>
 </head>
-<body class="font-sans antialiased relative m-0 p-0">
+<body class="flex flex-col min-h-screen">
 
-    <div id="loading-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[200] flex-col items-center justify-center transition-opacity duration-300" style="display: flex;">
-        <i class="fa-solid fa-circle-notch fa-spin text-5xl text-yellow-400 mb-4 drop-shadow-[0_0_15px_rgba(255,204,0,0.5)]"></i>
-        <p id="loading-text" class="text-white font-bold text-sm tracking-widest animate-pulse uppercase">Memuat Server...</p>
-    </div>
-
-    <!-- Login Screen -->
-    <div id="auth-screen" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center transition-opacity duration-500 p-4" style="display: flex;">
-        <div class="glass-modal p-8 rounded-3xl max-w-sm w-full text-center border border-yellow-500/20 relative overflow-hidden">
-            <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-20 h-20 mx-auto mb-4 object-contain drop-shadow-[0_0_15px_rgba(253,224,38,0.6)]">
-            
-            <h2 id="auth-title" class="text-2xl font-bold text-white mb-2">Login Nasabah</h2>
-            <p id="auth-subtitle" class="text-gray-400 text-sm mb-6">Masukkan Nomor WhatsApp Anda.</p>
-            
-            <div class="flex p-1 bg-gray-900/80 rounded-lg mb-6 border border-gray-700 relative z-10">
-                <button type="button" id="tab-nasabah" onclick="window.switchTab('nasabah')" class="flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all">Nasabah</button>
-                <button type="button" id="tab-admin" onclick="window.switchTab('admin')" class="flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all">Admin</button>
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchSection('beranda')">
+                <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(253,224,38,0.5)]">
+                <span class="text-xl font-bold tracking-tight">OZ<span class="text-gradient-gold">digi</span></span>
             </div>
 
-            <form id="auth-form" onsubmit="event.preventDefault(); window.processLoginAction(); return false;" class="space-y-4 relative z-10">
-                <input type="number" id="auth-input" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-center tracking-widest focus:outline-none focus:border-yellow-400 transition-colors" placeholder="Contoh: 0812... atau 628..." required>
+            <!-- Navigation Menu (No Login) -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <button onclick="switchSection('beranda')" id="nav-beranda" class="text-ozgold-400 font-semibold transition-colors hover:text-ozgold-400">Beranda</button>
                 
-                <div id="auth-error" class="text-red-400 text-xs font-medium bg-red-500/10 py-2 rounded-lg border border-red-500/20" style="display: none;">Nomor WA tidak terdaftar!</div>
-                
-                <div class="grid grid-cols-1 gap-2">
-                    <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(255,204,0,0.3)] hover:scale-105 transition-transform flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                <!-- OZ Finance Dropdown -->
+                <div class="relative group">
+                    <button class="flex items-center gap-1.5 py-2 text-slate-300 hover:text-ozgold-400 transition-colors">
+                        OZ Finance <i class="fa-solid fa-chevron-down text-[10px]"></i>
                     </button>
-                    <button type="button" id="btn-biometric-login" onclick="window.loginWithBiometrics()" class="w-full bg-gray-800 border border-gray-700 text-white font-bold py-3 rounded-xl hover:border-yellow-400 hover:text-yellow-400 transition-colors items-center justify-center gap-2" style="display: flex;">
-                        <i class="fa-solid fa-fingerprint text-lg"></i> Sidik Jari / FaceID
+                    <div class="absolute top-full left-0 w-48 glass-panel rounded-xl p-2 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 border border-white/15">
+                        <button onclick="switchSection('oz-finance-home')" class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 text-slate-300 hover:text-white transition-colors">Ringkasan Finance</button>
+                        <button onclick="switchSection('oz-finance-customers')" class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 text-slate-300 hover:text-white transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-users text-ozgold-400"></i> Data Pelanggan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- defOZite Dropdown -->
+                <div class="relative group">
+                    <button class="flex items-center gap-1.5 py-2 text-slate-300 hover:text-ozgold-400 transition-colors">
+                        defOZite <i class="fa-solid fa-chevron-down text-[10px]"></i>
                     </button>
+                    <div class="absolute top-full left-0 w-48 glass-panel rounded-xl p-2 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 border border-white/15">
+                        <button onclick="switchSection('defozite-home')" class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 text-slate-300 hover:text-white transition-colors">Ringkasan defOZite</button>
+                        <button onclick="switchSection('defozite-customers')" class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 text-slate-300 hover:text-white transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-users text-ozgold-400"></i> Data Pelanggan
+                        </button>
+                    </div>
                 </div>
-            </form>
-        </div>
-    </div>
+            </nav>
 
-    <!-- Main Container -->
-    <div class="w-full max-w-7xl mx-auto px-4 py-6 md:px-8">
+            <!-- Mobile Menu Toggle -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white text-xl">
+                <i class="fa-solid fa-bars" id="mobile-menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-white/10 px-6 py-4 space-y-3">
+            <button onclick="switchSection('beranda'); toggleMobileMenu();" class="block w-full text-left py-2 font-medium text-ozgold-400">Beranda</button>
+            <div class="border-t border-white/10 pt-2">
+                <p class="text-xs text-slate-400 uppercase font-semibold mb-1">OZ Finance</p>
+                <button onclick="switchSection('oz-finance-home'); toggleMobileMenu();" class="block w-full text-left py-1.5 text-xs text-slate-300">Ringkasan Finance</button>
+                <button onclick="switchSection('oz-finance-customers'); toggleMobileMenu();" class="block w-full text-left py-1.5 text-xs text-slate-300">Data Pelanggan</button>
+            </div>
+            <div class="border-t border-white/10 pt-2">
+                <p class="text-xs text-slate-400 uppercase font-semibold mb-1">defOZite</p>
+                <button onclick="switchSection('defozite-home'); toggleMobileMenu();" class="block w-full text-left py-1.5 text-xs text-slate-300">Ringkasan defOZite</button>
+                <button onclick="switchSection('defozite-customers'); toggleMobileMenu();" class="block w-full text-left py-1.5 text-xs text-slate-300">Data Pelanggan</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- Header Section (Dioptimalkan untuk HP agar simetris) -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-5">
-            <!-- Logo area -->
-            <div class="text-center md:text-left w-full md:w-auto">
-                <div class="flex items-center justify-center md:justify-start gap-3">
-                    <img src="https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" alt="OZ Logo" class="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(253,224,38,0.5)]">
-                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-200">OZfinance</h1>
-                </div>
+        <!-- SECTION 1: BERANDA -->
+        <section id="section-beranda" class="space-y-12">
+            <div class="text-center space-y-4 max-w-3xl mx-auto py-12">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-ozgold-500/10 text-ozgold-400 border border-ozgold-500/20">OZdigi Ecosystem Dashboard</span>
+                <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">Selamat Datang di <span class="text-gradient-gold">OZdigi</span></h1>
+                <p class="text-slate-400 text-sm sm:text-base">Platform digital terintegrasi untuk pengelolaan keuangan, pembiayaan, tabungan, dan infrastruktur layanan digital Anda.</p>
             </div>
-            
-            <!-- Actions area (Berjejer ke bawah penuh di HP, ke samping di PC) -->
-            <div id="header-actions" class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                
-                <div class="relative w-full sm:w-64">
-                    <input type="text" id="search-input" onkeyup="window.searchNasabah()" placeholder="Cari Nama / WA..." class="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 pl-10 text-white text-sm focus:outline-none focus:border-yellow-400 w-full transition-all" style="display: none;">
-                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" id="search-icon" style="display: none;"></i>
-                </div>
 
-                <button type="button" id="btn-install-pwa" onclick="window.triggerInstallPrompt()" class="w-full sm:w-auto bg-yellow-500/20 border border-yellow-500/50 hover:bg-yellow-500 hover:text-black text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" style="display: none;"><i class="fa-solid fa-download"></i> Install Aplikasi</button>
-                
-                <button type="button" id="btn-profile" onclick="window.openProfileModal()" class="w-full sm:w-auto bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 px-4 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" style="display: none;"><i class="fa-solid fa-user-circle text-lg"></i> Profil Saya</button>
-                
-                <div id="admin-actions" class="flex w-full sm:w-auto gap-2 justify-center" style="display: flex;">
-                    <button type="button" onclick="window.openTemplateModal()" class="w-12 h-11 shrink-0 rounded-xl bg-gray-800 border border-gray-700 hover:border-yellow-400 text-yellow-500 hover:text-yellow-300 flex items-center justify-center transition-all shadow-lg" title="Template Pengingat"><i class="fa-solid fa-bell"></i></button>
-                    <button type="button" onclick="window.openPwdModal()" class="w-12 h-11 shrink-0 rounded-xl bg-gray-800 border border-gray-700 hover:border-yellow-400 text-gray-400 hover:text-yellow-400 flex items-center justify-center transition-all shadow-lg" title="Ganti Password"><i class="fa-solid fa-key"></i></button>
-                    <button type="button" onclick="window.openAddModal()" class="flex-1 sm:flex-none bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 px-4 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 h-11"><i class="fa-solid fa-user-plus"></i> Nasabah Baru</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="relative group/carousel w-full">
-            <button type="button" id="nav-left" onclick="window.slideCarousel(-1)" class="absolute left-0 md:-left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-yellow-500/90 hover:bg-yellow-400 text-black items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] backdrop-blur-sm transition-all opacity-0 group-hover/carousel:opacity-100 hidden md:flex" style="display: none;"><i class="fa-solid fa-chevron-left"></i></button>
-            
-            <div id="dashboard-grid" class="flex flex-row overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 no-scrollbar pb-2" onscroll="window.updateCarouselIndicator()"></div>
-            
-            <button type="button" id="nav-right" onclick="window.slideCarousel(1)" class="absolute right-0 md:-right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-yellow-500/90 hover:bg-yellow-400 text-black items-center justify-center shadow-[0_0_15px_rgba(255,204,0,0.3)] backdrop-blur-sm transition-all opacity-0 group-hover/carousel:opacity-100 hidden md:flex" style="display: none;"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-        
-        <div id="carousel-indicators" class="flex justify-center gap-2 mt-4 flex-wrap"></div>
-    </div>
-
-    <!-- PROFILE MODAL -->
-    <div id="profile-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[150] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-modal w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900" id="profile-modal-content">
-            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
-                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-user-edit text-yellow-400 mr-2"></i> Edit Profil</h3>
-                <button type="button" onclick="window.closeProfileModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
-            </div>
-            
-            <form id="profile-form" onsubmit="event.preventDefault(); window.submitProfileForm(); return false;" class="space-y-5">
-                <div class="flex flex-col items-center gap-3">
-                    <div class="relative group cursor-pointer w-24 h-24 rounded-full overflow-hidden border-2 border-yellow-500/50 hover:border-yellow-400 transition-colors">
-                        <img id="profile-img-preview" src="https://via.placeholder.com/150/1f2937/f8fafc?text=Foto" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i class="fa-solid fa-camera text-white text-xl"></i>
-                        </div>
-                        <input type="file" id="profile-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card OZ Finance -->
+                <div class="glass-panel p-6 rounded-2xl space-y-4 hover:border-ozgold-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-ozgold-500/20 flex items-center justify-center text-ozgold-400 text-xl font-bold">
+                        <i class="fa-solid fa-wallet"></i>
                     </div>
-                    <p class="text-[10px] text-gray-500">Ketuk untuk ubah foto</p>
-                </div>
-                <div><label class="block text-xs text-gray-400 mb-1">Nama Tampilan Anda</label><input type="text" id="profile-name-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1">Nomor WhatsApp (Terkunci)</label>
-                    <div class="relative">
-                        <input type="text" id="profile-wa-input" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-4 py-2.5 text-gray-500 text-sm cursor-not-allowed" readonly>
-                        <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-600"></i>
+                    <h3 class="text-xl font-bold">OZ Finance</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Kelola data pembiayaan, angsuran nasabah, tenor, dan riwayat pembayaran cicilan dengan sistem yang transparan.</p>
+                    <div class="pt-2 flex gap-3">
+                        <button onclick="switchSection('oz-finance-home')" class="text-xs px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-medium">Ringkasan</button>
+                        <button onclick="switchSection('oz-finance-customers')" class="text-xs px-4 py-2 rounded-xl bg-ozgold-600 hover:bg-ozgold-500 text-white font-medium flex items-center gap-1.5">
+                            Data Pelanggan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
-                    <p class="text-[9px] text-red-400/80 mt-1">*Hanya admin yang dapat mengubah nomor WA.</p>
                 </div>
-                <button type="button" onclick="window.registerBiometrics('nasabah')" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-fingerprint"></i> Daftarkan Perangkat Ini (Biometrik)
-                </button>
-                <div class="pt-2"><button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-yellow-400 text-black rounded-xl py-3 text-sm font-bold shadow-lg transform hover:-translate-y-0.5 transition-all">Simpan Profil</button></div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Edit/Add Modal (Admin) -->
-    <div id="form-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-modal w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 custom-scroll max-h-[95vh] overflow-y-auto" id="form-modal-content">
-            <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3 sticky top-0 bg-gray-900 z-10">
-                <h3 id="modal-title" class="text-lg font-bold text-white"><i class="fa-solid fa-pen-to-square text-yellow-400 mr-2"></i> Edit Data</h3>
-                <button type="button" onclick="window.closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
-            </div>
-            <form id="data-form" onsubmit="event.preventDefault(); window.submitDataFormAction(); return false;" class="space-y-4">
-                <input type="hidden" id="form-id">
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs text-gray-400 mb-1">Nama Asli Nasabah</label><input type="text" id="form-name" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                    <div><label class="block text-xs text-gray-400 mb-1">No. WA (Admin Bisa Edit)</label><input type="number" id="form-wa" placeholder="08123..." class="w-full bg-gray-800 border border-yellow-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm"></div>
-                </div>
-                <div><label class="block text-xs text-gray-400 mb-1">Jenis Cicilan / Item</label><input type="text" id="form-item" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs text-gray-400 mb-1">Tagihan/Bulan (Rp)</label><input type="number" id="form-tagihan" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                    <div><label class="block text-xs text-gray-400 mb-1">Jatuh Tempo (Tgl)</label><input type="text" id="form-jatuh-tempo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" placeholder="Cth: 15" required></div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs text-gray-400 mb-1">Total Tenor (Bulan)</label><input type="number" id="form-total-bulan" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                    <div><label class="block text-xs text-gray-400 mb-1">Sudah Lunas (Bulan)</label><input type="number" id="form-lunas" class="w-full bg-gray-800 border border-yellow-500/50 rounded-lg px-3 py-2 text-yellow-400 font-bold focus:outline-none focus:border-yellow-400 text-sm" required></div>
-                </div>
-                <div class="pt-2 border-t border-gray-800">
-                    <div class="flex justify-between items-end mb-1">
-                        <label class="block text-xs text-gray-400">Riwayat Pembayaran</label>
-                        <button type="button" onclick="window.autoAddHistory()" class="text-[10px] bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500 hover:text-black font-bold px-2 py-1 rounded transition-colors flex items-center gap-1"><i class="fa-solid fa-bolt"></i> Catat Hari Ini</button>
+                <!-- Card defOZite -->
+                <div class="glass-panel p-6 rounded-2xl space-y-4 hover:border-ozgold-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl font-bold">
+                        <i class="fa-solid fa-vault"></i>
                     </div>
-                    <textarea id="form-history" rows="3" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-300 focus:outline-none focus:border-yellow-400 text-xs custom-scroll leading-relaxed"></textarea>
+                    <h3 class="text-xl font-bold">defOZite</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Sistem pengelolaan simpan pinjam dan tabungan profesional dengan pemantauan saldo secara real-time.</p>
+                    <div class="pt-2 flex gap-3">
+                        <button onclick="switchSection('defozite-home')" class="text-xs px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-medium">Ringkasan</button>
+                        <button onclick="switchSection('defozite-customers')" class="text-xs px-4 py-2 rounded-xl bg-ozgold-600 hover:bg-ozgold-500 text-white font-medium flex items-center gap-1.5">
+                            Data Pelanggan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="pt-4 flex gap-3 sticky bottom-0 bg-gray-900 pb-2">
-                    <button type="button" id="btn-hapus" onclick="window.handleDeleteClick()" data-confirm="false" class="bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-medium shrink-0 items-center gap-2 px-4 py-2" style="display: none;"><i class="fa-solid fa-trash"></i></button>
-                    <button type="button" onclick="window.closeModal()" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-xl text-sm font-medium">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold shadow-lg transform hover:-translate-y-0.5 transition-all">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal Password Admin + Fingerprint -->
-    <div id="pwd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-modal w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="pwd-modal-content">
-            <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
-                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-yellow-400 mr-2"></i> Keamanan Admin</h3>
-                <button type="button" onclick="window.closePwdModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
-            <form onsubmit="event.preventDefault(); window.submitPwdAction(); return false;" class="space-y-4">
-                <div><label class="block text-xs text-gray-400 mb-1">Password Lama</label><input type="password" id="pwd-old" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div>
-                <div><label class="block text-xs text-gray-400 mb-1">Password Baru</label><input type="password" id="pwd-new" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" required></div>
-                <div id="pwd-error" class="text-red-400 text-xs font-medium bg-red-500/10 py-2 rounded-lg text-center" style="display: none;"></div>
-                <div id="pwd-success" class="text-green-400 text-xs font-bold bg-green-500/10 py-2 rounded-lg text-center" style="display: none;">Tersimpan!</div>
-                
-                <button type="button" onclick="window.registerBiometrics('admin')" class="w-full bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600/40 text-blue-400 rounded-lg py-2.5 text-xs font-bold transition-colors flex justify-center items-center gap-2 mt-2">
-                    <i class="fa-solid fa-fingerprint"></i> Daftarkan Sidik Jari Admin
-                </button>
-                <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="window.closePwdModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
+        </section>
 
-    <!-- Modal Template Pengingat -->
-    <div id="template-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="glass-modal w-full max-w-md rounded-2xl p-6 transform scale-95 transition-transform duration-300 bg-gray-900 border border-yellow-500/20" id="template-modal-content">
-            <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
-                <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-bell text-yellow-400 mr-2"></i> Template Pengingat</h3>
-                <button type="button" onclick="window.closeTemplateModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+        <!-- SECTION 2: OZ FINANCE - RINGKASAN -->
+        <section id="section-oz-finance-home" class="hidden-section space-y-6">
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">OZ Finance Dashboard</h2>
+                        <p class="text-xs text-slate-400">Ringkasan data pembiayaan & cicilan nasabah</p>
+                    </div>
+                    <button onclick="switchSection('oz-finance-customers')" class="text-xs px-4 py-2 rounded-xl bg-ozgold-600 text-white font-medium">Lihat Data Pelanggan</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="glass-panel p-4 rounded-xl bg-darkblue-900/40">
+                        <p class="text-xs text-slate-400">Total Pelanggan</p>
+                        <p class="text-xl font-bold text-white mt-1">24 Orang</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl bg-darkblue-900/40">
+                        <p class="text-xs text-slate-400">Total Tagihan Aktif</p>
+                        <p class="text-xl font-bold text-ozgold-400 mt-1">Rp 45.500.000</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl bg-darkblue-900/40">
+                        <p class="text-xs text-slate-400">Status Sistem</p>
+                        <p class="text-xl font-bold text-emerald-400 mt-1">Aktif & Stabil</p>
+                    </div>
+                </div>
             </div>
-            <form onsubmit="event.preventDefault(); window.submitTemplateAction(); return false;" class="space-y-4">
-                <p class="text-xs text-gray-400 leading-relaxed">Pesan ini akan otomatis muncul pada perangkat (dengan nada notifikasi) saat jatuh tempo kurang dari 2 hari.<br><br>Gunakan teks: <br><strong class="text-yellow-400">{nama}</strong> untuk nama nasabah<br><strong class="text-yellow-400">{item}</strong> untuk nama barang/cicilan.</p>
-                <div>
-                    <textarea id="template-text" rows="5" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-yellow-400 text-sm custom-scroll leading-relaxed" required></textarea>
-                </div>
-                <div class="pt-2 flex gap-3">
-                    <button type="button" onclick="window.closeTemplateModal()" class="flex-1 px-4 py-2 bg-gray-700 text-white rounded-xl text-sm font-medium">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 rounded-xl text-sm font-bold shadow-lg">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
+        </section>
 
+        <!-- SECTION 3: OZ FINANCE - DATA PELANGGAN (SUB MENU) -->
+        <section id="section-oz-finance-customers" class="hidden-section space-y-6">
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">OZ Finance - Data Pelanggan</h2>
+                        <p class="text-xs text-slate-400">Daftar nasabah cicilan dan status pembayaran</p>
+                    </div>
+                    <div class="relative w-full sm:w-64">
+                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" placeholder="Cari pelanggan..." class="w-full bg-darkblue-900/80 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-xs text-white focus:outline-none focus:border-ozgold-500">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="border-b border-white/10 text-slate-400">
+                                <th class="pb-3 font-semibold">Nama Pelanggan</th>
+                                <th class="pb-3 font-semibold">No. WhatsApp</th>
+                                <th class="pb-3 font-semibold">Jenis Barang / Item</th>
+                                <th class="pb-3 font-semibold">Tagihan/Bulan</th>
+                                <th class="pb-3 font-semibold">Tenor</th>
+                                <th class="pb-3 font-semibold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 text-slate-300">
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 font-bold text-white">Budi Santoso</td>
+                                <td class="py-3">081234567890</td>
+                                <td class="py-3">Smartphone Redmi Note</td>
+                                <td class="py-3 text-ozgold-400 font-semibold">Rp 350.000</td>
+                                <td class="py-3">6/12 Bln</td>
+                                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400">Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 font-bold text-white">Siti Aminah</td>
+                                <td class="py-3">08568080847</td>
+                                <td class="py-3">Infinix Hot Series</td>
+                                <td class="py-3 text-ozgold-400 font-semibold">Rp 275.000</td>
+                                <td class="py-3">10/10 Bln</td>
+                                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-blue-500/20 text-blue-400">Lunas</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 font-bold text-white">Ahmad Fauzy</td>
+                                <td class="py-3">081294275779</td>
+                                <td class="py-3">Modem MABU NET</td>
+                                <td class="py-3 text-ozgold-400 font-semibold">Rp 150.000</td>
+                                <td class="py-3">3/6 Bln</td>
+                                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400">Aktif</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DEFOZITE - RINGKASAN -->
+        <section id="section-defozite-home" class="hidden-section space-y-6">
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">defOZite Dashboard</h2>
+                        <p class="text-xs text-slate-400">Ringkasan sistem simpan pinjam dan tabungan korespondensi</p>
+                    </div>
+                    <button onclick="switchSection('defozite-customers')" class="text-xs px-4 py-2 rounded-xl bg-ozgold-600 text-white font-medium">Lihat Data Pelanggan</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="glass-panel p-4 rounded-xl bg-darkblue-900/40">
+                        <p class="text-xs text-slate-400">Total Tabungan Koperasi</p>
+                        <p class="text-xl font-bold text-emerald-400 mt-1">Rp 18.250.000</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl bg-darkblue-900/40">
+                        <p class="text-xs text-slate-400">Total Pinjaman Keluar</p>
+                        <p class="text-xl font-bold text-red-400 mt-1">Rp 12.000.000</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl bg-darkblue-900/40">
+                        <p class="text-xs text-slate-400">Jumlah Anggota</p>
+                        <p class="text-xl font-bold text-white mt-1">15 Orang</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: DEFOZITE - DATA PELANGGAN (SUB MENU) -->
+        <section id="section-defozite-customers" class="hidden-section space-y-6">
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold">defOZite - Data Pelanggan</h2>
+                        <p class="text-xs text-slate-400">Daftar saldo tabungan dan pinjaman anggota defOZite</p>
+                    </div>
+                    <div class="relative w-full sm:w-64">
+                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" placeholder="Cari nasabah defOZite..." class="w-full bg-darkblue-900/80 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-xs text-white focus:outline-none focus:border-ozgold-500">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="border-b border-white/10 text-slate-400">
+                                <th class="pb-3 font-semibold">Nama Anggota</th>
+                                <th class="pb-3 font-semibold">No. WhatsApp</th>
+                                <th class="pb-3 font-semibold">Saldo Tabungan</th>
+                                <th class="pb-3 font-semibold">Sisa Pinjaman</th>
+                                <th class="pb-3 font-semibold">Status Akun</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 text-slate-300">
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 font-bold text-white">Rian Hidayat</td>
+                                <td class="py-3">081987654321</td>
+                                <td class="py-3 text-emerald-400 font-semibold">Rp 2.500.000</td>
+                                <td class="py-3 text-red-400 font-semibold">Rp 0</td>
+                                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400">Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 font-bold text-white">Dewi Lestari</td>
+                                <td class="py-3">081377889900</td>
+                                <td class="py-3 text-emerald-400 font-semibold">Rp 4.150.000</td>
+                                <td class="py-3 text-red-400 font-semibold">Rp 1.500.000</td>
+                                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400">Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 font-bold text-white">Hendra Gunawan</td>
+                                <td class="py-3">087811223344</td>
+                                <td class="py-3 text-emerald-400 font-semibold">Rp 850.000</td>
+                                <td class="py-3 text-red-400 font-semibold">Rp 3.000.000</td>
+                                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400">Aktif</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-white/10 py-6 mt-12 text-center text-xs text-slate-500">
+        <p>&copy; 2026 <span class="text-ozgold-400 font-semibold">OZdigi Ecosystem</span>. All rights reserved.</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC FOR NAVIGATION -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const manifestData = {
-                "name": "OZfinance Super Dashboard",
-                "short_name": "OZfinance",
-                "start_url": "./index.html",
-                "display": "standalone",
-                "background_color": "#000000",
-                "theme_color": "#fde047",
-                "icons": [
-                    { "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0", "sizes": "192x192", "type": "image/png" },
-                    { "src": "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0", "sizes": "512x512", "type": "image/png" }
-                ]
-            };
-            const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
-            document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
-
-            if ('serviceWorker' in navigator) {
-                const swCode = `self.addEventListener('install', e => { self.skipWaiting(); }); self.addEventListener('activate', e => { self.clients.claim(); }); self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });`;
-                const swBlob = new Blob([swCode], { type: 'text/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log('SW registration failed:', err));
-            }
-            if (!window.matchMedia('(display-mode: standalone)').matches) {
-                document.getElementById('btn-install-pwa').style.display = 'flex';
-            }
-        });
-
-        window.playNotifSound = function() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5);
-                gain.gain.setValueAtTime(1, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.5);
-            } catch(e) { console.log("Audio not supported"); }
-        };
-
-        window.checkReminders = function() {
-            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-                Notification.requestPermission();
-            }
-            const defaultTemplate = "Hallo {nama} pembayaran untuk {item} bulan ini akan jatuh tempo dua hari lagi, abaikan pesan jika sudah dibayar. OZfinance";
-            const template = localStorage.getItem('ozfinance_reminder_template') || defaultTemplate;
-            const today = new Date(); const currentMonth = today.getMonth() + 1;
-            const targetDate = new Date(); targetDate.setDate(targetDate.getDate() + 2);
-            const targetDayNumber = targetDate.getDate();
+        function switchSection(sectionId) {
+            const sections = [
+                'section-beranda', 
+                'section-oz-finance-home', 
+                'section-oz-finance-customers', 
+                'section-defozite-home', 
+                'section-defozite-customers'
+            ];
             
-            window.appData.forEach(customer => {
-                customer.items.forEach(item => {
-                    const lunas = parseInt(item.lunas) || 0; const total = parseInt(item.totalBulan) || 1;
-                    if (lunas >= total) return; 
-                    const itemDayNumber = parseInt(item.jatuhTempo); 
-                    
-                    if (!isNaN(itemDayNumber) && itemDayNumber === targetDayNumber) {
-                        const notifKey = `oz_notif_sent_${item.id}_bln_${currentMonth}`;
-                        if (!localStorage.getItem(notifKey)) {
-                            const cName = customer.customName || customer.name;
-                            const msg = template.replace('{nama}', cName).replace('{item}', item.item || 'cicilan');
-                            if (Notification.permission === "granted") {
-                                new Notification("Pengingat Jatuh Tempo", { body: msg, icon: "https://dl.dropboxusercontent.com/scl/fi/b3vvowv2tpjz7x4tl5kq0/OZ.png?rlkey=e2oamdv1tprgrdf5j2kjpgu46&st=368naga4&dl=0" });
-                            } else { alert("PENGINGAT OZfinance:\n\n" + msg); }
-                            window.playNotifSound();
-                            localStorage.setItem(notifKey, "true");
-                        }
-                    }
-                });
-            });
-        };
-
-        window.openTemplateModal = function() {
-            const defaultTemplate = "Hallo {nama} pembayaran untuk {item} bulan ini akan jatuh tempo dua hari lagi, abaikan pesan jika sudah dibayar. OZfinance";
-            document.getElementById('template-text').value = localStorage.getItem('ozfinance_reminder_template') || defaultTemplate;
-            document.getElementById('template-modal').classList.remove('opacity-0', 'pointer-events-none'); 
-            document.getElementById('template-modal-content').classList.remove('scale-95'); document.getElementById('template-modal-content').classList.add('scale-100'); 
-        };
-        window.closeTemplateModal = function() { 
-            document.getElementById('template-modal').classList.add('opacity-0', 'pointer-events-none'); 
-            document.getElementById('template-modal-content').classList.remove('scale-100'); document.getElementById('template-modal-content').classList.add('scale-95'); 
-        };
-        window.submitTemplateAction = function() {
-            const newTemplate = document.getElementById('template-text').value.trim();
-            localStorage.setItem('ozfinance_reminder_template', newTemplate);
-            alert("Template notifikasi berhasil disimpan!"); window.closeTemplateModal();
-        };
-
-        let deferredPrompt; window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
-        window.triggerInstallPrompt = async function() {
-            if (!deferredPrompt) { alert("Untuk Menginstal: Ketuk menu browser Chrome/Safari (titik tiga), lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen)."); return; }
-            deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') { document.getElementById('btn-install-pwa').style.display = 'none'; } deferredPrompt = null;
-        };
-
-        window.allServerData = []; window.appData = []; window.isReadOnly = false; window.adminPassword = localStorage.getItem('ozfinance_admin_pwd') || "0000"; window.loginMode = 'nasabah'; window.currentLoggedWA = null; window.temporaryBase64Photo = null; let deleteConfirmTimeout;
-
-        window.normalizeWA = function(num) { if (!num) return ""; let str = String(num).replace(/\D/g, ''); if (str.startsWith('08')) str = '62' + str.substring(1); return str; };
-        window.showLoading = function(text) { document.getElementById('loading-text').innerText = text || "Memproses..."; document.getElementById('loading-overlay').style.display = 'flex'; };
-        window.hideLoading = function() { document.getElementById('loading-overlay').style.display = 'none'; };
-
-        const firebaseConfig = { apiKey: "AIzaSyBkHkY6dAYWppYWRFPRum2bwx2Dgnk8pV4", authDomain: "ozfinance-5fb9c.firebaseapp.com", databaseURL: "https://ozfinance-5fb9c-default-rtdb.asia-southeast1.firebasedatabase.app/", projectId: "ozfinance-5fb9c", storageBucket: "ozfinance-5fb9c.firebasestorage.app", messagingSenderId: "53300038907", appId: "1:53300038907:web:2157b566d33b5bdbea745e" };
-
-        let dbRef;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.database(); dbRef = db.ref('ozfinance_data');
-            dbRef.on('value', function(snapshot) {
-                const data = snapshot.val(); let parsedData = [];
-                if (data) { Object.keys(data).forEach(function(key) { parsedData.push(data[key]); }); }
-                window.allServerData = parsedData;
-                
-                const searchQuery = document.getElementById('search-input') ? document.getElementById('search-input').value : '';
-                if(searchQuery.trim() === '') {
-                    if(window.isReadOnly && window.currentLoggedWA) {
-                        window.appData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === window.currentLoggedWA; });
-                    } else if (!window.isReadOnly && window.currentLoggedWA === null && document.getElementById('auth-screen').style.display === 'none') {
-                        window.appData = window.allServerData;
-                    }
-                }
-                
-                if (document.getElementById('auth-screen').style.display === 'none') {
-                    window.renderDashboard();
-                    setTimeout(window.checkReminders, 2000); 
-                }
-                window.hideLoading();
-            }, function(error) { alert("Kesalahan Koneksi Firebase. Detail: " + error.message); window.hideLoading(); });
-
-            window.saveAppDataFirebase = function() {
-                window.showLoading("Menyimpan ke Cloud..."); const dataObj = {}; window.allServerData.forEach(function(d) { dataObj[d.id] = d; });
-                dbRef.set(dataObj).then(function() { window.hideLoading(); }).catch(function(e) { alert("Gagal menyimpan ke Firebase Database: " + e.message); window.hideLoading(); });
-            };
-        } catch (e) { alert("Sistem Firebase Gagal Memuat: " + e.message); window.hideLoading(); }
-
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search); const passedWA = urlParams.get('wa');
-            if (passedWA) {
-                setTimeout(function() {
-                    const normalizedPassed = window.normalizeWA(passedWA);
-                    const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === normalizedPassed; });
-                    if (customerData.length > 0) { window.handleLoginSuccess(customerData, normalizedPassed); }
-                }, 1500); 
-            } else { window.hideLoading(); }
-        };
-
-        window.switchTab = function(mode) {
-            window.loginMode = mode; document.getElementById('btn-biometric-login').style.display = 'flex';
-            if (mode === 'nasabah') {
-                document.getElementById('tab-nasabah').className = 'flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all';
-                document.getElementById('tab-admin').className = 'flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all';
-                document.getElementById('auth-title').textContent = 'Login Nasabah'; document.getElementById('auth-subtitle').textContent = 'Masukkan Nomor WhatsApp Anda.';
-                document.getElementById('auth-input').type = 'number'; document.getElementById('auth-input').placeholder = 'Contoh: 0812... atau 628...'; document.getElementById('auth-input').value = '';
-            } else {
-                document.getElementById('tab-admin').className = 'flex-1 py-2 text-sm font-bold rounded-md bg-yellow-500 text-black shadow transition-all';
-                document.getElementById('tab-nasabah').className = 'flex-1 py-2 text-sm font-bold rounded-md text-gray-400 hover:text-white transition-all';
-                document.getElementById('auth-title').textContent = 'Login Admin'; document.getElementById('auth-subtitle').textContent = 'Masukkan password untuk mengakses data.';
-                document.getElementById('auth-input').type = 'password'; document.getElementById('auth-input').placeholder = '••••'; document.getElementById('auth-input').value = '';
-            }
-        };
-
-        window.searchNasabah = function() {
-            if (window.isReadOnly) return;
-            const query = document.getElementById('search-input').value.toLowerCase().trim();
-            if (!query) { window.appData = window.allServerData; } else {
-                window.appData = window.allServerData.filter(function(d) { return (d.name && d.name.toLowerCase().includes(query)) || (d.wa && String(d.wa).includes(query)); });
-            }
-            window.renderDashboard();
-        };
-
-        window.handleLoginSuccess = function(customerData, wa) {
-            window.isReadOnly = true; window.appData = customerData; window.currentLoggedWA = window.normalizeWA(wa);
-            document.getElementById('admin-actions').style.display = 'none'; document.getElementById('search-input').style.display = 'none'; document.getElementById('search-icon').style.display = 'none'; document.getElementById('btn-profile').style.display = 'flex'; document.getElementById('nav-left').style.display = 'none'; document.getElementById('nav-right').style.display = 'none';
-            document.getElementById('auth-screen').classList.add('opacity-0');
-            if (Notification.permission !== "granted") { Notification.requestPermission(); }
-            setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; window.renderDashboard(); window.checkReminders(); }, 500);
-        };
-
-        window.processLoginAction = function() {
-            const input = document.getElementById('auth-input').value.trim(); const errorDiv = document.getElementById('auth-error');
-            if (Notification.permission !== "granted") { Notification.requestPermission(); }
-            if (window.loginMode === 'admin') {
-                if (input === window.adminPassword) {
-                    window.isReadOnly = false; window.currentLoggedWA = null; window.appData = window.allServerData;
-                    document.getElementById('admin-actions').style.display = 'flex'; document.getElementById('search-input').style.display = 'block'; document.getElementById('search-icon').style.display = 'block'; document.getElementById('btn-profile').style.display = 'none';
-                    if(window.innerWidth > 768) { document.getElementById('nav-left').style.display = 'flex'; document.getElementById('nav-right').style.display = 'flex'; }
-                    document.getElementById('auth-screen').classList.add('opacity-0');
-                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; window.renderDashboard(); window.checkReminders(); }, 500);
-                } else { errorDiv.textContent = 'Password admin salah!'; errorDiv.style.display = 'block'; setTimeout(function() { errorDiv.style.display = 'none'; }, 3000); }
-            } else {
-                const normalizedInput = window.normalizeWA(input);
-                const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === normalizedInput; });
-                if (customerData.length > 0) { window.handleLoginSuccess(customerData, normalizedInput); } else { errorDiv.textContent = 'Nomor WA salah atau belum terdaftar!'; errorDiv.style.display = 'block'; setTimeout(function() { errorDiv.style.display = 'none'; }, 3000); }
-            }
-        };
-
-        function bufferToBase64url(buffer) { const bytes = new Uint8Array(buffer); let str = ''; for (let char of bytes) str += String.fromCharCode(char); return window.btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ""); }
-        function base64urlToBuffer(base64url) { const padding = '='.repeat((4 - base64url.length % 4) % 4); const base64 = (base64url + padding).replace(/\-/g, "+").replace(/_/g, "/"); const str = window.atob(base64); const buffer = new ArrayBuffer(str.length); const bytes = new Uint8Array(buffer); for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i); return buffer; }
-        
-        window.registerBiometrics = async function(role) {
-            if (!window.PublicKeyCredential) { alert("Perangkat Anda tidak mendukung fitur WebAuthn/Sidik Jari."); return; }
-            try {
-                const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge); const userID = new Uint8Array(16); window.crypto.getRandomValues(userID); const uName = role === 'admin' ? "Admin OZfinance" : window.currentLoggedWA; const dName = role === 'admin' ? "Administrator" : "Nasabah";
-                const publicKey = { challenge: challenge, rp: { name: "OZfinance System" }, user: { id: userID, name: uName, displayName: dName }, pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }], authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" }, timeout: 60000 };
-                const credential = await navigator.credentials.create({ publicKey });
-                if (role === 'admin') { localStorage.setItem('oz_biometric_admin_id', bufferToBase64url(credential.rawId)); alert("Sidik Jari Admin Berhasil Didaftarkan!");
-                } else { localStorage.setItem('oz_biometric_id', bufferToBase64url(credential.rawId)); localStorage.setItem('oz_biometric_wa', window.currentLoggedWA); alert("Sidik Jari Nasabah Berhasil Didaftarkan!"); }
-            } catch (err) { alert("Pendaftaran Biometrik dibatalkan."); }
-        };
-
-        window.loginWithBiometrics = async function() {
-            if (Notification.permission !== "granted") { Notification.requestPermission(); }
-            if (window.loginMode === 'admin') {
-                const savedId = localStorage.getItem('oz_biometric_admin_id');
-                if(!savedId) { alert("Sidik Jari Admin belum terdaftar. Login dengan Password, lalu aktifkan di menu Ikon Kunci (Ganti Password)."); return; }
-                try {
-                    const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
-                    const publicKey = { challenge: challenge, allowCredentials: [{ type: 'public-key', id: base64urlToBuffer(savedId) }], userVerification: "required" };
-                    await navigator.credentials.get({ publicKey });
-                    window.isReadOnly = false; window.currentLoggedWA = null; window.appData = window.allServerData;
-                    document.getElementById('admin-actions').style.display = 'flex'; document.getElementById('search-input').style.display = 'block'; document.getElementById('search-icon').style.display = 'block'; document.getElementById('btn-profile').style.display = 'none';
-                    if(window.innerWidth > 768) { document.getElementById('nav-left').style.display = 'flex'; document.getElementById('nav-right').style.display = 'flex'; }
-                    document.getElementById('auth-screen').classList.add('opacity-0');
-                    setTimeout(function() { document.getElementById('auth-screen').style.display = 'none'; window.renderDashboard(); window.checkReminders(); }, 500);
-                } catch(err) { alert("Pemindaian Admin gagal. Silakan masuk dengan Password."); }
-            } else {
-                const savedId = localStorage.getItem('oz_biometric_id'); const savedWa = localStorage.getItem('oz_biometric_wa');
-                if(!savedId || !savedWa) { alert("Perangkat belum terdaftar. Login manual dengan Nomor WA, lalu aktifkan Sidik Jari di menu Profil."); return; }
-                try {
-                    const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
-                    const publicKey = { challenge: challenge, allowCredentials: [{ type: 'public-key', id: base64urlToBuffer(savedId) }], userVerification: "required" };
-                    await navigator.credentials.get({ publicKey });
-                    const customerData = window.allServerData.filter(function(d) { return d.wa && window.normalizeWA(d.wa) === window.normalizeWA(savedWa); });
-                    if (customerData.length > 0) { window.handleLoginSuccess(customerData, savedWa); } else { alert("Data tidak ditemukan."); }
-                } catch(err) { alert("Pemindaian Nasabah gagal. Silakan masuk dengan WA."); }
-            }
-        };
-
-        document.getElementById('profile-upload').addEventListener('change', function(e) {
-            const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = function(event) {
-                const img = new Image(); img.src = event.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas'); const scaleSize = 150 / img.width; canvas.width = 150; canvas.height = img.height * scaleSize;
-                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); window.temporaryBase64Photo = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('profile-img-preview').src = window.temporaryBase64Photo;
-                }
-            };
-        });
-
-        window.formatRp = function(angka) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka); };
-        window.getProgressColor = function(percent) { return percent === 0 ? 'from-red-600 to-orange-500' : percent < 50 ? 'from-orange-500 to-yellow-500' : percent < 80 ? 'from-yellow-500 to-yellow-400' : percent < 100 ? 'from-yellow-400 to-yellow-300' : 'from-green-500 to-green-400'; };
-        
-        window.toggleDetails = function(id) { const el = document.getElementById(id); if (el) el.classList.toggle('hidden'); };
-
-        window.slideCarousel = function(direction) { 
-            const container = document.getElementById('dashboard-grid'); const scrollAmount = container.clientWidth; const maxScroll = container.scrollWidth - container.clientWidth;
-            if (direction === -1 && container.scrollLeft <= 10) { container.scrollTo({ left: maxScroll, behavior: 'auto' }); } 
-            else if (direction === 1 && container.scrollLeft >= maxScroll - 10) { container.scrollTo({ left: 0, behavior: 'auto' }); } 
-            else { container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' }); }
-        };
-
-        window.renderDashboard = function() {
-            const groupedData = window.appData.reduce(function(acc, currentItem) {
-                if(!currentItem || !currentItem.name) return acc;
-                const nameKey = String(currentItem.name).trim().toUpperCase();
-                if (!acc[nameKey]) acc[nameKey] = { name: String(currentItem.name), customName: currentItem.customName || String(currentItem.name), items: [], photo: currentItem.photo };
-                acc[nameKey].items.push(currentItem); return acc;
-            }, {});
-            
-            const customers = Object.values(groupedData);
-            let htmlContent = '';
-            customers.forEach(function(customer) {
-                let itemsHtml = ''; let totalTagihanNasabah = 0;
-                let avatarSrc = customer.photo ? customer.photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.customName)}&background=fde047&color=000`;
-                
-                customer.items.forEach(function(item) {
-                    totalTagihanNasabah += parseInt(item.tagihan) || 0;
-                    const progressPercent = (item.lunas / (item.totalBulan || 1)) * 100; const isLunas = progressPercent >= 100; const colorClass = window.getProgressColor(progressPercent);
-                    const totalBulan = parseInt(item.totalBulan || 1); const lunasBulan = parseInt(item.lunas || 0); const sisaBulan = totalBulan - lunasBulan;
-                    const editBtn = !window.isReadOnly ? `<button type="button" onclick="event.stopPropagation(); window.openEditModal('${item.id}')" class="absolute top-3 right-3 text-gray-500 hover:text-yellow-400 z-10"><i class="fa-solid fa-pen-to-square text-sm"></i></button>` : '';
-                    
-                    itemsHtml += `
-                    <div class="bg-gray-900/50 rounded-xl p-3 border border-white/5 relative group/item transition-colors hover:bg-gray-800/80 cursor-pointer w-full" onclick="window.toggleDetails('detail-${item.id}')">
-                        ${editBtn}
-                        <div class="pr-8 mb-2"><h3 class="text-yellow-400 text-sm font-bold flex items-center gap-1.5"><i class="fa-solid ${isLunas ? 'fa-check-circle text-green-500' : 'fa-box-open'}"></i> ${item.item || '-'}</h3></div>
-                        <div class="flex justify-between text-xs mb-2"><span class="text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> Tgl ${item.jatuhTempo || '-'}</span><span class="text-white font-medium">${window.formatRp(item.tagihan)}/bln</span></div>
-                        <div class="flex justify-between text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1.5"><span>Status: ${isLunas ? 'LUNAS' : item.lunas + '/' + item.totalBulan + ' BLN'}</span><span class="${isLunas ? 'text-green-500' : 'text-yellow-500'}">${progressPercent.toFixed(0)}%</span></div>
-                        <div class="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden shadow-inner"><div class="h-full bg-gradient-to-r ${colorClass} rounded-full shimmer progress-fill" style="width: 0%" data-target="${progressPercent > 100 ? 100 : progressPercent}%"></div></div>
-                        <div id="detail-${item.id}" class="hidden mt-3 pt-3 border-t border-white/10 space-y-1.5 text-xs">
-                            <div class="flex justify-between text-gray-300"><span>Tenor Pinjaman:</span><span class="font-bold text-white">${totalBulan} Bulan</span></div>
-                            <div class="flex justify-between text-gray-300"><span>Sisa Tenor:</span><span class="font-bold text-yellow-400">${sisaBulan} Bulan</span></div>
-                            <div class="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[10px] text-gray-400 whitespace-pre-line leading-relaxed"><div class="font-bold text-gray-300 mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Riwayat Pembayaran:</div>${item.history ? item.history : 'Belum ada catatan pembayaran.'}</div>
-                        </div>
-                        <div class="text-[10px] text-gray-500 text-center mt-2 group-hover/item:text-yellow-500/50 transition-colors"><i class="fa-solid fa-chevron-down"></i> Klik untuk rincian</div>
-                    </div>`;
-                });
-                
-                htmlContent += `
-                <div class="glass-card rounded-2xl flex flex-col relative overflow-hidden w-full md:w-[400px] flex-shrink-0 snap-center">
-                    <div class="p-4 border-b border-yellow-500/20 bg-black/20 flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-11 h-11 rounded-full border border-yellow-500/30 overflow-hidden bg-gray-800 shrink-0"><img src="${avatarSrc}" class="w-full h-full object-cover"></div>
-                            <div><h2 class="text-lg font-bold text-white leading-tight">${customer.customName}</h2><p class="text-xs text-gray-400">${customer.items.length} Item Aktif</p></div>
-                        </div>
-                    </div>
-                    <div class="p-4 flex-1 flex flex-col gap-3 custom-scroll max-h-[55vh] overflow-y-auto w-full">${itemsHtml}</div>
-                    <div class="p-4 border-t border-white/5 bg-gray-900/60 flex justify-between items-center mt-auto"><span class="text-xs text-gray-400 font-medium">Total Tagihan/Bln</span><span class="text-base font-bold text-yellow-400">${window.formatRp(totalTagihanNasabah)}</span></div>
-                </div>`;
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.classList.add('hidden-section');
             });
 
-            if(customers.length === 0 && !window.isReadOnly) { htmlContent = `<div class="w-full text-center py-10 text-gray-500"><i class="fa-solid fa-folder-open text-4xl mb-3"></i><p>Tidak ada nasabah ditemukan.</p></div>`; }
+            const target = document.getElementById('section-' + sectionId);
+            if(target) {
+                target.classList.remove('hidden-section');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
 
-            document.getElementById('dashboard-grid').innerHTML = htmlContent;
-            document.getElementById('carousel-indicators').innerHTML = Array(customers.length).fill('<div class="carousel-dot w-2 h-2 rounded-full bg-gray-600 transition-all duration-300"></div>').join('');
-            window.updateCarouselIndicator();
-            setTimeout(() => { document.querySelectorAll('.progress-fill').forEach(bar => { bar.style.width = bar.getAttribute('data-target'); }); }, 100);
-        };
-        
-        window.resetDeleteBtn = function() { const btn = document.getElementById('btn-hapus'); btn.setAttribute('data-confirm', 'false'); btn.innerHTML = '<i class="fa-solid fa-trash"></i>'; btn.style.display = 'none'; };
-        window.handleDeleteClick = function() { const btn = document.getElementById('btn-hapus'); if (btn.getAttribute('data-confirm') === 'true') { window.allServerData = window.allServerData.filter(function(d) { return String(d.id) !== String(document.getElementById('form-id').value); }); window.appData = window.allServerData; window.saveAppDataFirebase(); window.closeModal(); window.renderDashboard(); } else { btn.setAttribute('data-confirm', 'true'); btn.innerHTML = '<i class="fa-solid fa-question"></i> Yakin?'; btn.classList.replace('bg-red-600', 'bg-red-800'); clearTimeout(deleteConfirmTimeout); deleteConfirmTimeout = setTimeout(window.resetDeleteBtn, 3000); } };
-        
-        window.openAddModal = function() { if(window.isReadOnly) return; document.getElementById('modal-title').innerHTML = '<i class="fa-solid fa-user-plus text-yellow-400 mr-2"></i> Tambah Nasabah'; document.getElementById('data-form').reset(); document.getElementById('form-id').value = ''; document.getElementById('form-lunas').value = '0'; document.getElementById('form-wa').value = ''; document.getElementById('form-history').value = ''; document.getElementById('btn-hapus').style.display = 'none'; document.getElementById('form-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('form-modal-content').classList.remove('scale-95'); document.getElementById('form-modal-content').classList.add('scale-100'); };
-        window.openEditModal = function(id) { if(window.isReadOnly) return; const item = window.appData.find(function(d) { return String(d.id) === String(id); }); if (!item) return; document.getElementById('modal-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-yellow-400 mr-2"></i> Edit Data'; document.getElementById('form-id').value = item.id; document.getElementById('form-name').value = item.name; document.getElementById('form-item').value = item.item; document.getElementById('form-tagihan').value = item.tagihan; document.getElementById('form-jatuh-tempo').value = item.jatuhTempo; document.getElementById('form-total-bulan').value = item.totalBulan; document.getElementById('form-lunas').value = item.lunas; document.getElementById('form-wa').value = item.wa || ""; document.getElementById('form-history').value = item.history || ""; window.resetDeleteBtn(); document.getElementById('btn-hapus').style.display = 'flex'; document.getElementById('form-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('form-modal-content').classList.remove('scale-95'); document.getElementById('form-modal-content').classList.add('scale-100'); };
-        
-        document.getElementById('form-name').addEventListener('input', function(e) { const typedName = e.target.value.trim().toLowerCase(); const existingCustomer = window.appData.find(function(d) { return d.name.trim().toLowerCase() === typedName && d.wa && d.wa.trim() !== ""; }); if (existingCustomer) { document.getElementById('form-wa').value = existingCustomer.wa; } });
-        
-        window.autoAddHistory = function() { const historyField = document.getElementById('form-history'); const lunasField = document.getElementById('form-lunas'); const tagihanField = document.getElementById('form-tagihan'); const totalBulanField = document.getElementById('form-total-bulan'); const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); const nominal = window.formatRp(tagihanField.value || 0); let currentBulan = parseInt(lunasField.value) || 0; const totalBulan = parseInt(totalBulanField.value) || 1; if(currentBulan >= totalBulan) { alert("Cicilan ini sudah lunas sepenuhnya."); return; } const nextBulan = currentBulan + 1; const newEntry = `${date} - Bayar Bln ke-${nextBulan} (${nominal})`; historyField.value = historyField.value.trim() === '' ? newEntry : historyField.value + '\n' + newEntry; lunasField.value = nextBulan; };
-        window.closeModal = function() { document.getElementById('form-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('form-modal-content').classList.remove('scale-100'); document.getElementById('form-modal-content').classList.add('scale-95'); };
-        
-        window.updateCarouselIndicator = function() { const container = document.getElementById('dashboard-grid'); const dots = document.querySelectorAll('.carousel-dot'); if(!dots.length) return; const index = Math.round(container.scrollLeft / container.clientWidth); dots.forEach(function(dot, i) { if (i === index) { dot.classList.replace('bg-gray-600', 'bg-yellow-400'); dot.classList.replace('w-2', 'w-6'); } else { dot.classList.replace('bg-yellow-400', 'bg-gray-600'); dot.classList.replace('w-6', 'w-2'); } }); };
-        
-        window.openProfileModal = function() { if(!window.currentLoggedWA) return; const cData = window.appData.find(function(d) { return window.normalizeWA(d.wa) === window.currentLoggedWA; }); if(!cData) return; document.getElementById('profile-name-input').value = cData.customName || cData.name; document.getElementById('profile-wa-input').value = cData.wa; window.temporaryBase64Photo = cData.photo || null; document.getElementById('profile-img-preview').src = window.temporaryBase64Photo ? window.temporaryBase64Photo : `https://ui-avatars.com/api/?name=${encodeURIComponent(cData.customName || cData.name)}&background=fde047&color=000&size=150`; document.getElementById('profile-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-95'); document.getElementById('profile-modal-content').classList.add('scale-100'); };
-        window.closeProfileModal = function() { document.getElementById('profile-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('profile-modal-content').classList.remove('scale-100'); document.getElementById('profile-modal-content').classList.add('scale-95'); };
-        
-        window.submitProfileForm = function() {
-            const newName = document.getElementById('profile-name-input').value.trim();
-            if(window.allServerData.length > 0) { window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.currentLoggedWA) { d.customName = newName; d.photo = window.temporaryBase64Photo || ""; } }); }
-            window.appData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.currentLoggedWA) { d.customName = newName; d.photo = window.temporaryBase64Photo || ""; } });
-            window.saveAppDataFirebase(); window.closeProfileModal(); window.renderDashboard();
-        };
-
-        window.submitDataFormAction = function() {
-            const idVal = document.getElementById('form-id').value; const name = document.getElementById('form-name').value.trim(); const wa = document.getElementById('form-wa').value.trim(); const item = document.getElementById('form-item').value.trim(); const tagihan = parseInt(document.getElementById('form-tagihan').value) || 0; const jatuhTempo = document.getElementById('form-jatuh-tempo').value.trim(); const totalBulan = parseInt(document.getElementById('form-total-bulan').value) || 1; let lunas = parseInt(document.getElementById('form-lunas').value) || 0; const history = document.getElementById('form-history').value.trim(); if(lunas > totalBulan) lunas = totalBulan;
-            let existingPhoto = ""; let existingCustomName = ""; const existingCustomer = window.allServerData.find(function(d) { return window.normalizeWA(d.wa) === window.normalizeWA(wa); }); 
-            if(existingCustomer) { existingPhoto = existingCustomer.photo; existingCustomName = existingCustomer.customName; }
-            if (idVal) {
-                const itemIndex = window.allServerData.findIndex(function(d) { return String(d.id) === String(idVal); });
-                if(itemIndex !== -1) window.allServerData[itemIndex] = { id: window.allServerData[itemIndex].id, name, customName: existingCustomName || name, item, tagihan, totalBulan, lunas, jatuhTempo, history, wa, photo: existingPhoto };
-            } else { window.allServerData.push({ id: Date.now(), name, customName: existingCustomName || name, wa, item, tagihan, totalBulan, lunas, jatuhTempo, history, photo: existingPhoto }); }
-            
-            window.allServerData.forEach(function(d) { if(window.normalizeWA(d.wa) === window.normalizeWA(wa)) { d.name = name; d.wa = wa; } });
-            const query = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
-            if(query !== '') { window.searchNasabah(); } else { window.appData = window.allServerData; }
-            window.saveAppDataFirebase(); window.closeModal(); window.renderDashboard();
-        };
-
-        window.openPwdModal = function() { document.getElementById('pwd-old').value = ''; document.getElementById('pwd-new').value = ''; document.getElementById('pwd-error').style.display = 'none'; document.getElementById('pwd-success').style.display = 'none'; document.getElementById('pwd-modal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('pwd-modal-content').classList.remove('scale-95'); document.getElementById('pwd-modal-content').classList.add('scale-100'); };
-        window.closePwdModal = function() { document.getElementById('pwd-modal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('pwd-modal-content').classList.remove('scale-100'); document.getElementById('pwd-modal-content').classList.add('scale-95'); };
-        window.submitPwdAction = function() { if (document.getElementById('pwd-old').value !== window.adminPassword) { document.getElementById('pwd-error').textContent = "Password lama salah!"; document.getElementById('pwd-error').style.display = 'block'; return; } window.adminPassword = document.getElementById('pwd-new').value; localStorage.setItem('ozfinance_admin_pwd', window.adminPassword); document.getElementById('pwd-success').style.display = 'block'; setTimeout(window.closePwdModal, 1500); };
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars';
+            }
+        }
     </script>
 </body>
 </html>
